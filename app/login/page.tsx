@@ -41,9 +41,9 @@ export default function LoginPage() {
 
   if (sent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-white flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-12 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <span className="text-3xl">✉️</span>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-3">Enlace enviado</h2>
@@ -59,12 +59,12 @@ export default function LoginPage() {
               setEmail('');
               setError('');
             }}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+            className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
           >
             Enviar otro enlace
           </button>
           <p className="text-sm text-gray-600 mt-6">
-            <Link href="/" className="text-indigo-600 hover:text-indigo-700 font-semibold">
+            <Link href="/" className="text-teal-600 hover:text-teal-700 font-semibold">
               Volver al inicio
             </Link>
           </p>
@@ -74,10 +74,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-white flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-12 max-w-md w-full">
         <Link href="/" className="flex items-center gap-2 mb-8 hover:opacity-70">
-          <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-lg">C</span>
           </div>
           <h1 className="text-xl font-bold text-gray-900">La Cabina Colectiva</h1>
@@ -94,7 +94,7 @@ export default function LoginPage() {
             onClick={() => setTipo('empleado')}
             className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${
               tipo === 'empleado'
-                ? 'bg-white text-indigo-600 shadow-sm'
+                ? 'bg-white text-teal-600 shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -107,7 +107,7 @@ export default function LoginPage() {
             onClick={() => setTipo('rrhh')}
             className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${
               tipo === 'rrhh'
-                ? 'bg-white text-indigo-600 shadow-sm'
+                ? 'bg-white text-teal-600 shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -135,7 +135,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
             />
           </div>
 
@@ -145,7 +145,7 @@ export default function LoginPage() {
             className={`w-full py-3 rounded-lg font-semibold text-white transition-colors ${
               loading
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-indigo-600 hover:bg-indigo-700'
+                : 'bg-teal-600 hover:bg-teal-700'
             }`}
           >
             {loading ? 'Enviando...' : 'Enviar enlace de acceso'}
@@ -154,7 +154,7 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-gray-600 mt-8">
           ¿Eres nuevo? {' '}
-          <Link href="/iniciar" className="text-indigo-600 hover:text-indigo-700 font-semibold">
+          <Link href="/iniciar" className="text-teal-600 hover:text-teal-700 font-semibold">
             Inicia un proceso
           </Link>
         </p>

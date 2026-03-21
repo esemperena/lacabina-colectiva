@@ -191,14 +191,14 @@ export default function PropuestasPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-4 mb-4">
             <Link href="/" className="flex items-center gap-2 hover:opacity-70">
-              <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">C</span>
               </div>
             </Link>
             <span className="text-gray-400">/</span>
             <Link
               href={`/dashboard/${procesoId}`}
-              className="text-indigo-600 hover:underline"
+              className="text-teal-600 hover:underline"
             >
               Dashboard
             </Link>
@@ -224,7 +224,7 @@ export default function PropuestasPage() {
                 value={newProposal.titulo}
                 onChange={handleInputChange}
                 placeholder="Ej: Mejorar el horario de trabajo"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
               />
             </div>
 
@@ -238,7 +238,7 @@ export default function PropuestasPage() {
                 onChange={handleInputChange}
                 rows={4}
                 placeholder="Explica tu propuesta con detalle..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
               />
             </div>
 
@@ -251,7 +251,7 @@ export default function PropuestasPage() {
                   name="tipo"
                   value={newProposal.tipo}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
                 >
                   <option value="propuesta">Propuesta</option>
                   <option value="queja">Queja</option>
@@ -267,7 +267,7 @@ export default function PropuestasPage() {
                     name="es_anonima"
                     checked={newProposal.es_anonima}
                     onChange={handleInputChange}
-                    className="w-5 h-5 text-indigo-600 rounded border-gray-300 focus:ring-2 focus:ring-indigo-500"
+                    className="w-5 h-5 text-teal-600 rounded border-gray-300 focus:ring-2 focus:ring-teal-500"
                   />
                   <span className="text-sm font-semibold text-gray-900">
                     Mantener anónimo
@@ -291,7 +291,7 @@ export default function PropuestasPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              className="w-full px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50"
             >
               {loading ? 'Enviando...' : 'Enviar Propuesta'}
             </button>
@@ -334,7 +334,7 @@ export default function PropuestasPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600">
-                      <span className="font-bold text-lg text-indigo-600">
+                      <span className="font-bold text-lg text-teal-600">
                         {propuesta.votos}
                       </span>{' '}
                       {propuesta.votos === 1 ? 'voto' : 'votos'}
@@ -345,8 +345,8 @@ export default function PropuestasPage() {
                     onClick={() => handleVote(propuesta.id)}
                     className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                       propuesta.has_voted
-                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                        : 'border border-indigo-600 text-indigo-600 hover:bg-indigo-50'
+                        ? 'bg-teal-600 text-white hover:bg-teal-700'
+                        : 'border border-teal-600 text-teal-600 hover:bg-teal-50'
                     }`}
                   >
                     {propuesta.has_voted ? '✓ Votado' : 'Votar'}

@@ -57,7 +57,7 @@ export default async function RRHHPage({
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link href="/" className="flex items-center gap-2 hover:opacity-70 inline-block mb-4">
-            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
@@ -82,14 +82,14 @@ export default async function RRHHPage({
             <div>
               <p className="text-sm text-gray-600 mb-2">Participación de Empleados</p>
               <div className="flex items-baseline gap-2 mb-3">
-                <span className="text-3xl font-bold text-indigo-600">
+                <span className="text-3xl font-bold text-teal-600">
                   {proceso.empleados_unidos}
                 </span>
                 <span className="text-gray-600">de {proceso.empleados_objetivo}</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                 <div
-                  className="bg-indigo-600 h-full"
+                  className="bg-teal-600 h-full"
                   style={{ width: `${porcentaje}%` }}
                 />
               </div>
@@ -101,7 +101,7 @@ export default async function RRHHPage({
             {/* Proposals Count */}
             <div>
               <p className="text-sm text-gray-600 mb-2">Total de Propuestas</p>
-              <p className="text-3xl font-bold text-indigo-600 mb-3">
+              <p className="text-3xl font-bold text-teal-600 mb-3">
                 {listaPropuestas.length}
               </p>
               <p className="text-sm text-gray-600">
@@ -136,13 +136,13 @@ export default async function RRHHPage({
         </div>
 
         {/* Increase Participation CTA */}
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-8 mb-12">
+        <div className="bg-teal-50 border border-teal-200 rounded-xl p-8 mb-12">
           <h3 className="text-lg font-semibold text-indigo-900 mb-4">Aumentar Participación</h3>
-          <p className="text-indigo-800 mb-6">
+          <p className="text-teal-800 mb-6">
             Para que el proceso avance, necesitas que al menos el 10% de los empleados ({Math.ceil(proceso.empleados_objetivo * 0.1)}) se unan.
             Actualmente tienes {proceso.empleados_unidos} participantes.
           </p>
-          <button className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+          <button className="bg-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
             Enviar Recordatorio a Empleados
           </button>
         </div>
@@ -176,7 +176,7 @@ export default async function RRHHPage({
                       </div>
                       <div className="text-right">
                         <p className="text-sm text-gray-600">Votos</p>
-                        <p className="text-2xl font-bold text-indigo-600">
+                        <p className="text-2xl font-bold text-teal-600">
                           {propuesta.votos_count}
                         </p>
                       </div>
@@ -190,7 +190,7 @@ export default async function RRHHPage({
                     </p>
 
                     <div className="border-t border-gray-200 pt-4">
-                      <button className="text-indigo-600 font-semibold hover:text-indigo-700 text-sm">
+                      <button className="text-teal-600 font-semibold hover:text-teal-700 text-sm">
                         Ver Detalles →
                       </button>
                     </div>

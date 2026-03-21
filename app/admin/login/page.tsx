@@ -37,12 +37,12 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
           {/* Header */}
           <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
@@ -81,14 +81,14 @@ export default function AdminLoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading || success}
                 placeholder="admin@example.com"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading || success || !email}
-              className="w-full bg-indigo-600 text-white font-semibold py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-teal-600 text-white font-semibold py-2 rounded-lg hover:bg-teal-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {loading ? 'Enviando...' : 'Enviar enlace de acceso'}
             </button>
@@ -97,7 +97,7 @@ export default function AdminLoginPage() {
           <div className="mt-8 pt-8 border-t border-gray-200">
             <Link
               href="/"
-              className="text-sm text-gray-500 hover:text-indigo-600 flex items-center justify-center gap-1"
+              className="text-sm text-gray-500 hover:text-teal-600 flex items-center justify-center gap-1"
             >
               ← Volver a la web
             </Link>

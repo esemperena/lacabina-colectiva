@@ -89,7 +89,7 @@ export default async function DashboardPage({
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link href="/" className="flex items-center gap-2 hover:opacity-70 inline-block">
-            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
@@ -115,9 +115,9 @@ export default async function DashboardPage({
                 <div
                   className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg mb-2 ${
                     phase <= fase
-                      ? 'bg-indigo-600 text-white'
+                      ? 'bg-teal-600 text-white'
                       : phase === fase + 1
-                        ? 'bg-indigo-100 text-indigo-600 border-2 border-indigo-600'
+                        ? 'bg-teal-100 text-teal-600 border-2 border-teal-600'
                         : 'bg-gray-200 text-gray-600'
                   }`}
                 >
@@ -156,13 +156,13 @@ export default async function DashboardPage({
               <span className="text-gray-700 font-medium">
                 {procesoData.empleados_unidos} de {procesoData.empleados_objetivo} empleados se han unido
               </span>
-              <span className="text-2xl font-bold text-indigo-600">{porcentaje}%</span>
+              <span className="text-2xl font-bold text-teal-600">{porcentaje}%</span>
             </div>
 
             {/* Progress Bar */}
             <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
-                className="bg-indigo-600 h-full transition-all duration-500"
+                className="bg-teal-600 h-full transition-all duration-500"
                 style={{ width: `${porcentaje}%` }}
               />
             </div>
@@ -211,7 +211,7 @@ export default async function DashboardPage({
               </p>
               <Link
                 href={`/dashboard/${procesoId}/propuestas`}
-                className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
               >
                 Ver Propuestas
               </Link>
@@ -225,7 +225,7 @@ export default async function DashboardPage({
               <p className="text-gray-600 mb-6">
                 Se están seleccionando representantes. Puedes ofrecerte como voluntario o ser seleccionado por sorteo.
               </p>
-              <button className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+              <button className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
                 Ser Representante
               </button>
             </div>
@@ -238,7 +238,7 @@ export default async function DashboardPage({
               <p className="text-gray-600 mb-6">
                 Los representantes están dialogando con la dirección. Aquí aparecerán las respuestas.
               </p>
-              <button className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+              <button className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
                 Ver Resultados
               </button>
             </div>

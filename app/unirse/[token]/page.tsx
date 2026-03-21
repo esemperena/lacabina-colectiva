@@ -82,7 +82,7 @@ export default function UnirsePagePage() {
         <header className="border-b border-gray-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <Link href="/" className="flex items-center gap-2 hover:opacity-70">
-              <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">C</span>
               </div>
               <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
@@ -102,22 +102,22 @@ export default function UnirsePagePage() {
               <h3 className="font-semibold text-gray-900 mb-4">Qué sigue:</h3>
               <ul className="space-y-3 text-gray-700">
                 <li className="flex gap-3">
-                  <span className="font-bold text-indigo-600">1.</span>
+                  <span className="font-bold text-teal-600">1.</span>
                   <span>Accede al dashboard para ver propuestas de otros empleados</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-indigo-600">2.</span>
+                  <span className="font-bold text-teal-600">2.</span>
                   <span>Propone tus ideas, quejas o consultas</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-indigo-600">3.</span>
+                  <span className="font-bold text-teal-600">3.</span>
                   <span>Vota las propuestas que te importan</span>
                 </li>
               </ul>
             </div>
             <Link
               href={`/dashboard/${procesoId}`}
-              className="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+              className="inline-block bg-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
             >
               Ir al Dashboard
             </Link>
@@ -133,7 +133,7 @@ export default function UnirsePagePage() {
       <header className="border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link href="/" className="flex items-center gap-2 hover:opacity-70">
-            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
@@ -169,7 +169,7 @@ export default function UnirsePagePage() {
                 name="nombre"
                 value={formData.nombre}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
                 placeholder="Tu nombre (si lo deseas compartir)"
               />
             </div>
@@ -186,7 +186,7 @@ export default function UnirsePagePage() {
                 onChange={handleInputChange}
                 min="18"
                 max="120"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
                 placeholder="Tu edad (si lo deseas)"
               />
             </div>
@@ -200,7 +200,7 @@ export default function UnirsePagePage() {
                 name="sexo"
                 value={formData.sexo}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
               >
                 <option value="">Prefiero no especificar</option>
                 <option value="masculino">Masculino</option>
@@ -217,7 +217,7 @@ export default function UnirsePagePage() {
                   name="anonimidad_confirmada"
                   checked={formData.anonimidad_confirmada}
                   onChange={handleInputChange}
-                  className="mt-1 w-5 h-5 text-indigo-600 rounded border-gray-300 focus:ring-2 focus:ring-indigo-500"
+                  className="mt-1 w-5 h-5 text-teal-600 rounded border-gray-300 focus:ring-2 focus:ring-teal-500"
                 />
                 <span className="text-sm text-green-800">
                   Confirmo que entiendo que este proceso es <span className="font-semibold">completamente anónimo</span>. Mi participación será privada y segura.
@@ -235,7 +235,7 @@ export default function UnirsePagePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              className="w-full px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50"
             >
               {loading ? 'Uniéndote...' : 'Unirme al Proceso'}
             </button>

@@ -55,7 +55,7 @@ export default async function AdminPage() {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <div>
@@ -105,7 +105,7 @@ export default async function AdminPage() {
                       </div>
 
                       <div className="mt-3 w-full bg-gray-100 rounded-full h-2">
-                        <div className="bg-indigo-500 h-2 rounded-full" style={{ width: `${Math.min(porcentaje, 100)}%` }} />
+                        <div className="bg-teal-500 h-2 rounded-full" style={{ width: `${Math.min(porcentaje, 100)}%` }} />
                       </div>
                     </div>
 
@@ -114,9 +114,17 @@ export default async function AdminPage() {
                         href={`/rrhh/${proceso.token_rrhh}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                        className="text-center px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-semibold hover:bg-teal-700 transition-colors"
                       >
                         Panel RRHH →
+                      </a>
+                      <a
+                        href={`/dashboard/${proceso.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-center px-4 py-2 bg-slate-700 text-white rounded-lg text-sm font-semibold hover:bg-slate-800 transition-colors"
+                      >
+                        Dashboard Empleados →
                       </a>
                       <span className="text-center px-4 py-2 bg-gray-100 text-gray-500 rounded-lg text-sm">
                         ID: <code className="text-xs">{proceso.id.slice(0, 8)}…</code>

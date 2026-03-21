@@ -109,7 +109,7 @@ export default function IniciarPage() {
         <header className="border-b border-gray-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <Link href="/" className="flex items-center gap-2 hover:opacity-70">
-              <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">C</span>
               </div>
               <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
@@ -123,28 +123,28 @@ export default function IniciarPage() {
             <div className="text-5xl mb-6">✓</div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">¡Proceso creado exitosamente!</h2>
             <p className="text-lg text-gray-600 mb-8">
-              Tu ID de proceso es: <span className="font-mono font-bold text-indigo-600">{procesoId}</span>
+              Tu ID de proceso es: <span className="font-mono font-bold text-teal-600">{procesoId}</span>
             </p>
             <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8 text-left">
               <h3 className="font-semibold text-gray-900 mb-4">Próximos pasos:</h3>
               <ul className="space-y-3 text-gray-700">
                 <li className="flex gap-3">
-                  <span className="font-bold text-indigo-600">1.</span>
+                  <span className="font-bold text-teal-600">1.</span>
                   <span>Hemos enviado invitaciones a {formData.colegas_emails.split(/[,\n]/).filter(e => e.trim()).length} compañeros</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-indigo-600">2.</span>
+                  <span className="font-bold text-teal-600">2.</span>
                   <span>Espera a que se unan suficientes compañeros. Cuando se alcance el umbral de participación, el proceso avanzará automáticamente a la Fase 2.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-indigo-600">3.</span>
+                  <span className="font-bold text-teal-600">3.</span>
                   <span>Accede al dashboard desde el enlace que te hemos enviado a tu correo.</span>
                 </li>
               </ul>
             </div>
             <Link
               href="/"
-              className="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+              className="inline-block bg-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
             >
               Volver al inicio
             </Link>
@@ -160,7 +160,7 @@ export default function IniciarPage() {
       <header className="border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link href="/" className="flex items-center gap-2 hover:opacity-70">
-            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
@@ -177,7 +177,7 @@ export default function IniciarPage() {
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
                     s <= step
-                      ? 'bg-indigo-600 text-white'
+                      ? 'bg-teal-600 text-white'
                       : 'bg-gray-200 text-gray-600'
                   }`}
                 >
@@ -186,7 +186,7 @@ export default function IniciarPage() {
                 {s < 3 && (
                   <div
                     className={`w-20 h-1 ${
-                      s < step ? 'bg-indigo-600' : 'bg-gray-200'
+                      s < step ? 'bg-teal-600' : 'bg-gray-200'
                     }`}
                   />
                 )}
@@ -215,7 +215,7 @@ export default function IniciarPage() {
                     name="nombre"
                     value={formData.nombre}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
                     placeholder="Ej: TechCorp"
                   />
                 </div>
@@ -228,7 +228,7 @@ export default function IniciarPage() {
                     name="sector"
                     value={formData.sector}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
                   >
                     <option value="">Selecciona un sector</option>
                     <option value="tecnología">Tecnología</option>
@@ -251,7 +251,7 @@ export default function IniciarPage() {
                     name="num_empleados"
                     value={formData.num_empleados}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
                     placeholder="Ej: 150"
                     min="1"
                   />
@@ -266,7 +266,7 @@ export default function IniciarPage() {
                     name="rrhh_email"
                     value={formData.rrhh_email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
                     placeholder="rrhh@empresa.com"
                   />
                 </div>
@@ -298,7 +298,7 @@ export default function IniciarPage() {
                     name="iniciador_email"
                     value={formData.iniciador_email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
                     placeholder="tu.email@empresa.com"
                   />
                 </div>
@@ -336,7 +336,7 @@ export default function IniciarPage() {
                     value={formData.colegas_emails}
                     onChange={handleInputChange}
                     rows={8}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 font-mono text-sm text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 font-mono text-sm text-gray-900"
                     placeholder="colega1@empresa.com&#10;colega2@empresa.com&#10;colega3@empresa.com"
                   />
                 </div>
@@ -369,7 +369,7 @@ export default function IniciarPage() {
             <button
               onClick={step === 3 ? handleSubmit : handleNext}
               disabled={loading}
-              className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              className="flex-1 px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50"
             >
               {loading ? 'Creando...' : step === 3 ? 'Crear Proceso' : 'Siguiente'}
             </button>
