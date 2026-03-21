@@ -7,6 +7,35 @@ import PropuestasClient from './propuestas/PropuestasClient';
 
 type Fase = 1 | 2 | 3 | 4;
 
+interface Anuncio { id: string; contenido: string; created_at: string; }
+
+function AnunciosBoard({ anuncios }: { anuncios: Anuncio[] }) {
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-8">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-lg">📢</span>
+        <h3 className="text-lg font-semibold text-gray-900">Tablón de RRHH</h3>
+      </div>
+      {anuncios.length === 0 ? (
+        <p className="text-sm text-gray-400 italic">Aún no hay anuncios publicados por RRHH.</p>
+      ) : (
+        <div className="space-y-4">
+          {anuncios.map(a => (
+            <div key={a.id} className="border-l-4 border-teal-400 pl-4">
+              <p className="text-sm text-gray-800 whitespace-pre-wrap mb-1">{a.contenido}</p>
+              <p className="text-xs text-gray-400">
+                {new Date(a.created_at).toLocaleDateString('es-ES', {
+                  day: 'numeric', month: 'long', year: 'numeric',
+                })}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default async function DashboardPage({
   params,
 }: {
@@ -35,6 +64,21 @@ export default async function DashboardPage({
       if (tokenAge <= 86400 * 1000) {
         isAdminView = true;
       }
+    }
+  }
+
+  // If admin bypass: use initiator's participante so interactions work
+  if (isAdminView) {
+    const { data: iniciador } = await supabaseAdmin
+      .from('participantes')
+      .select('id, propuestas_enviadas, listo_fase2')
+      .eq('proceso_id', procesoId)
+      .eq('es_iniciador', true)
+      .single();
+    if (iniciador) {
+      participanteId = iniciador.id;
+      misPropostas = iniciador.propuestas_enviadas || 0;
+      listoFase2 = iniciador.listo_fase2 || false;
     }
   }
 
@@ -91,6 +135,14 @@ export default async function DashboardPage({
   const umbralProceso = Math.ceil(procesoData.empleados_objetivo * 0.1);
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
   const inviteLink = `${APP_URL}/invitar/${procesoId}`;
+
+  // Fetch announcements from RRHH
+  const { data: anunciosData } = await supabaseAdmin
+    .from('anuncios')
+    .select('id, contenido, created_at')
+    .eq('proceso_id', procesoId)
+    .order('created_at', { ascending: false });
+  const anuncios = anunciosData || [];
 
   // Fetch propuestas data (only needed for fase >= 2)
   let propuestasConVotos: Array<{
@@ -248,23 +300,27 @@ export default async function DashboardPage({
           )}
         </div>
 
-        {/* Fase 1: Invite link */}
+        {/* Fase 1: Invite + Announcements side by side */}
         {fase === 1 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Invita a más compañeros</h3>
-            <div className="space-y-4 text-sm text-gray-700 mb-6">
-              <p>Comparte este enlace con cualquier compañero que quieras sumar al proceso. Cuando lo abran, podrán introducir su correo y recibirán su invitación personal.</p>
-              <p><span className="font-semibold">Todo es anónimo:</span> nadie sabrá quién invitó a quién.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white rounded-xl border border-gray-200 p-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Invita a más compañeros</h3>
+              <div className="space-y-4 text-sm text-gray-700 mb-6">
+                <p>Comparte este enlace con cualquier compañero que quieras sumar al proceso. Cuando lo abran, podrán introducir su correo y recibirán su invitación personal.</p>
+                <p><span className="font-semibold">Todo es anónimo:</span> nadie sabrá quién invitó a quién.</p>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 mb-4">
+                <p className="text-xs text-gray-500 mb-1 font-medium">Enlace de invitación</p>
+                <p className="text-sm font-mono text-gray-700 break-all">{inviteLink}</p>
+              </div>
+              <CopyButton url={inviteLink} />
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 mb-4">
-              <p className="text-xs text-gray-500 mb-1 font-medium">Enlace de invitación</p>
-              <p className="text-sm font-mono text-gray-700 break-all">{inviteLink}</p>
-            </div>
-            <CopyButton url={inviteLink} />
+
+            <AnunciosBoard anuncios={anuncios} />
           </div>
         )}
 
-        {/* Fase 2: Propuestas incrustadas */}
+        {/* Fase 2+: Propuestas incrustadas */}
         {fase >= 2 && (
           <div className="bg-white rounded-xl border border-gray-200 p-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">Propuestas e Ideas</h3>
@@ -275,12 +331,15 @@ export default async function DashboardPage({
               fase={fase}
               misPropostas={misPropostas}
               listoFase2={listoFase2}
-              isAdminView={isAdminView}
+              isAdminView={false}
               empresaNombre={procesoData.empresa.nombre}
               fase2FinalEn={fase2FinalEn}
             />
           </div>
         )}
+
+        {/* Fase 2+: Announcements below proposals */}
+        {fase >= 2 && <AnunciosBoard anuncios={anuncios} />}
 
         {/* Fase 3 */}
         {fase === 3 && (

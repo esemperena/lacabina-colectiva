@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
 import UploadEmails from './UploadEmails';
 import ContactForm from './ContactForm';
+import AnuncioForm from './AnuncioForm';
 
 interface Propuesta {
   id: string;
@@ -56,6 +57,15 @@ export default async function RRHHPage({
     .eq('proceso_id', proceso.id);
 
   const yaEnvioEmails = (invitacionesCount ?? 0) > 0;
+
+  // Fetch existing announcements
+  const { data: anunciosData } = await supabaseAdmin
+    .from('anuncios')
+    .select('id, contenido, created_at')
+    .eq('proceso_id', proceso.id)
+    .order('created_at', { ascending: false });
+
+  const anuncios = anunciosData || [];
 
   const empresa = proceso.empresa as { nombre: string; num_empleados: number; rrhh_email: string };
   const porcentaje = Math.round((proceso.empleados_unidos / proceso.empleados_objetivo) * 100);
@@ -203,6 +213,9 @@ export default async function RRHHPage({
             </div>
           )}
         </div>
+
+        {/* Announcement board */}
+        <AnuncioForm token={token} anunciosIniciales={anuncios} />
 
         {/* Contact Form */}
         <ContactForm token={token} empresaNombre={empresa.nombre} />

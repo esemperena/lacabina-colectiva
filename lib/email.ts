@@ -107,6 +107,38 @@ export async function enviarMagicLink(email: string, link: string) {
   })
 }
 
+export async function enviarEmailAnuncioRRHH(
+  email: string,
+  tokenAcceso: string,
+  nombreEmpresa: string,
+  contenidoAnuncio: string
+) {
+  const enlaceAcceso = `${APP_URL}/api/auth/verify/${tokenAcceso}`
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `📢 Nuevo comunicado de RRHH — ${nombreEmpresa}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
+        <h2 style="color: #1f2937;">Comunicado de Recursos Humanos</h2>
+        <p>El departamento de RRHH de <strong>${nombreEmpresa}</strong> ha publicado un mensaje en el tablón del proceso:</p>
+
+        <div style="background: #f8fafc; border-left: 4px solid #0d9488; padding: 16px 20px; margin: 20px 0; border-radius: 4px;">
+          <p style="color: #1f2937; margin: 0; white-space: pre-wrap;">${contenidoAnuncio}</p>
+        </div>
+
+        <a href="${enlaceAcceso}" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
+          Ver en mi dashboard →
+        </a>
+
+        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+        <p style="color: #999; font-size: 12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+      </div>
+    `,
+  })
+}
+
 export async function enviarEmailInicioFase2(
   email: string,
   tokenAcceso: string,
