@@ -133,14 +133,6 @@ export default async function AdminPage() {
                       >
                         Panel RRHH →
                       </a>
-                      <a
-                        href={`/dashboard/${proceso.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-center px-4 py-2 bg-slate-700 text-white rounded-lg text-sm font-semibold hover:bg-slate-800 transition-colors"
-                      >
-                        👁 Vista admin empleado →
-                      </a>
                       {iniciadorTokenMap[proceso.id] && (
                         <a
                           href={`${APP_URL}/api/auth/verify/${iniciadorTokenMap[proceso.id]}`}

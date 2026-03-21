@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 
-export default function UploadEmails({ token }: { token: string }) {
+interface Props {
+  token: string;
+  yaEnvioEmails: boolean;
+}
+
+export default function UploadEmails({ token, yaEnvioEmails: initialYaEnvio }: Props) {
+  const [yaEnvio, setYaEnvio] = useState(initialYaEnvio);
   const [open, setOpen] = useState(false);
   const [emails, setEmails] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,6 +28,8 @@ export default function UploadEmails({ token }: { token: string }) {
       if (res.ok) {
         setResult({ ok: true, message: `✅ ${data.enviados} invitaciones enviadas correctamente.` });
         setEmails('');
+        setYaEnvio(true);
+        setOpen(false);
       } else {
         setResult({ ok: false, message: data.error || 'Error al procesar los emails.' });
       }
@@ -32,21 +40,76 @@ export default function UploadEmails({ token }: { token: string }) {
     }
   }
 
+  // After first upload: show compact "add more" section
+  if (yaEnvio) {
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+              <span className="text-teal-600 font-bold text-sm">✓</span>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">Listado de empleados enviado</h3>
+              <p className="text-sm text-gray-500">Las invitaciones han sido enviadas.</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setOpen(!open)}
+            className="text-sm text-teal-600 hover:text-teal-700 font-semibold border border-teal-200 px-4 py-2 rounded-lg hover:bg-teal-50 transition-colors"
+          >
+            {open ? 'Cancelar' : '+ Añadir más empleados'}
+          </button>
+        </div>
+
+        {open && (
+          <form onSubmit={handleSubmit} className="mt-4 border-t border-gray-100 pt-4">
+            <label className="block text-sm font-semibold text-gray-800 mb-2">
+              Correos electrónicos adicionales
+            </label>
+            <p className="text-xs text-gray-500 mb-3">
+              Un email por línea o separados por comas. Los emails ya invitados serán ignorados.
+            </p>
+            <textarea
+              value={emails}
+              onChange={e => setEmails(e.target.value)}
+              rows={5}
+              placeholder={'empleado1@empresa.com\nempleado2@empresa.com'}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-teal-500 mb-3 resize-y"
+              required
+            />
+            {result && (
+              <div className={`p-3 rounded-lg text-sm mb-3 ${result.ok ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                {result.message}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={loading || !emails.trim()}
+              className="bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white font-semibold px-6 py-2 rounded-lg transition-colors text-sm"
+            >
+              {loading ? 'Enviando…' : 'Enviar invitaciones'}
+            </button>
+          </form>
+        )}
+      </div>
+    );
+  }
+
+  // First time: show the big amber action section
   return (
     <div className="bg-amber-50 border-2 border-amber-300 rounded-xl p-8 mb-8">
-      {/* Header acción pendiente */}
-      <div className="flex items-start gap-4 mb-6">
+      <div className="flex items-start gap-4">
         <div className="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
           <span className="text-white font-bold text-lg">!</span>
         </div>
-        <div>
+        <div className="flex-1">
           <span className="text-xs font-bold uppercase tracking-wide text-amber-700 mb-1 block">Acción pendiente</span>
           <h3 className="text-xl font-bold text-gray-900 mb-2">Proporciona el listado de empleados</h3>
           <p className="text-gray-700 leading-relaxed mb-4">
             Para que el proceso sea lo más ágil y representativo posible, necesitamos que compartas los correos electrónicos de toda la plantilla. La plataforma enviará automáticamente una invitación personalizada a cada persona para que pueda unirse de forma voluntaria y anónima.
           </p>
 
-          {/* Privacidad */}
           <div className="bg-white border border-amber-200 rounded-lg p-4 mb-4">
             <h4 className="font-semibold text-gray-900 mb-2">🔒 Privacidad garantizada en todo momento</h4>
             <ul className="space-y-1 text-sm text-gray-700">
@@ -57,15 +120,13 @@ export default function UploadEmails({ token }: { token: string }) {
             </ul>
           </div>
 
-          {/* Win-win */}
           <div className="bg-white border border-teal-200 rounded-lg p-4 mb-6">
             <h4 className="font-semibold text-gray-900 mb-2">🤝 Un proceso transparente beneficia a todos</h4>
             <p className="text-sm text-gray-700 leading-relaxed">
-              La colaboración de RRHH no es solo un gesto — es una inversión. Las empresas donde los empleados se sienten escuchados registran <strong>menos absentismo, mayor retención de talento y mejor clima laboral</strong>. Compartir el listado completo de empleados garantiza que el proceso sea representativo, legítimo y reconocido por ambas partes. El objetivo final es el mismo: una empresa donde la comunicación fluye y todos ganan.
+              La colaboración de RRHH no es solo un gesto — es una inversión. Las empresas donde los empleados se sienten escuchados registran <strong>menos absentismo, mayor retención de talento y mejor clima laboral</strong>. Compartir el listado completo de empleados garantiza que el proceso sea representativo, legítimo y reconocido por ambas partes.
             </p>
           </div>
 
-          {/* Botón / formulario */}
           {!open ? (
             <button
               onClick={() => setOpen(true)}
