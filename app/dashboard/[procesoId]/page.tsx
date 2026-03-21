@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase';
+import CopyButton from './CopyButton';
 
 type Fase = 1 | 2 | 3 | 4;
 
@@ -80,6 +81,8 @@ export default async function DashboardPage({
   );
 
   const umbralProceso = Math.ceil(procesoData.empleados_objetivo * 0.1);
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
+  const inviteLink = `${APP_URL}/invitar/${procesoId}`;
 
   const getPhaseTitle = (fase: Fase): string => {
     const titles: Record<Fase, string> = {
@@ -187,11 +190,19 @@ export default async function DashboardPage({
           </div>
 
           {fase === 1 && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-              <p className="text-sm text-blue-800">
-                <span className="font-semibold">Umbral para avanzar:</span> Se necesita al menos {umbralProceso} empleados ({Math.round((umbralProceso / procesoData.empleados_objetivo) * 100)}%) para que el proceso avance a la siguiente fase.
-              </p>
-            </div>
+            procesoData.empleados_unidos >= umbralProceso ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+                <p className="text-sm text-green-800 font-semibold">
+                  ✅ Umbral alcanzado — el proceso avanzará a la Fase 2 en breve.
+                </p>
+              </div>
+            ) : (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                <p className="text-sm text-blue-800">
+                  <span className="font-semibold">Umbral para avanzar:</span> Se necesita al menos {umbralProceso} empleados ({Math.round((umbralProceso / procesoData.empleados_objetivo) * 100)}%) para que el proceso avance a la siguiente fase. Faltan {umbralProceso - procesoData.empleados_unidos}.
+                </p>
+              </div>
+            )
           )}
         </div>
 
@@ -199,12 +210,16 @@ export default async function DashboardPage({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {fase === 1 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Instrucciones para Compartir</h3>
-              <div className="space-y-4 text-sm text-gray-700">
-                <p><span className="font-semibold block mb-1">1. Invita a más compañeros</span>Comparte el enlace que recibiste por email con quien quieras sumar al proceso.</p>
-                <p><span className="font-semibold block mb-1">2. Cuantos más, más peso tenéis</span>Llegar al umbral mínimo es necesario para avanzar al siguiente paso.</p>
-                <p><span className="font-semibold block mb-1">3. Todo es anónimo</span>Nadie sabrá quién ha invitado a quién.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Invita a más compañeros</h3>
+              <div className="space-y-4 text-sm text-gray-700 mb-6">
+                <p>Comparte este enlace con cualquier compañero que quieras sumar al proceso. Cuando lo abran, podrán introducir su correo y recibirán su invitación personal.</p>
+                <p><span className="font-semibold">Todo es anónimo:</span> nadie sabrá quién invitó a quién.</p>
               </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 mb-4">
+                <p className="text-xs text-gray-500 mb-1 font-medium">Enlace de invitación</p>
+                <p className="text-sm font-mono text-gray-700 break-all">{inviteLink}</p>
+              </div>
+              <CopyButton url={inviteLink} />
             </div>
           )}
 

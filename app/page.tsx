@@ -15,9 +15,9 @@ export default function Home() {
             </div>
             <Link
               href="/login"
-              className="text-teal-600 hover:text-teal-700 font-semibold"
+              className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors text-sm"
             >
-              Ya tengo un proceso
+              Accede a tu proceso
             </Link>
           </div>
         </div>
@@ -26,12 +26,9 @@ export default function Home() {
       {/* Hero Section */}
       <section className="flex-1">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-          <h2 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Tu voz en el trabajo,<br />de forma anónima
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8 leading-tight max-w-3xl mx-auto">
             Inicia un proceso de representación colectiva en tu empresa. Anónimo, seguro y respaldado por la ley.
-          </p>
+          </h2>
           <Link
             href="/iniciar"
             className="inline-block bg-teal-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-teal-700 transition-colors text-lg"
@@ -88,7 +85,16 @@ export default function Home() {
           <div className="space-y-6">
             <div className="border border-gray-200 rounded-xl p-6">
               <h4 className="text-lg font-semibold text-gray-900 mb-2">¿Es realmente anónimo?</h4>
-              <p className="text-gray-600">Sí. Los correos electrónicos nunca se guardan en texto claro — se convierten en un código irreversible (hash SHA-256). Nadie, ni siquiera los administradores de la plataforma, puede saber quién inició el proceso o quién votó qué.</p>
+              <p className="text-gray-600 mb-4">Sí. Los correos electrónicos nunca se guardan en texto claro — se convierten en un código irreversible (hash SHA-256). Nadie, ni siquiera los administradores de la plataforma, puede saber quién inició el proceso o quién votó qué.</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Ejemplo real de transformación</p>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-sm font-mono">
+                  <span className="bg-white border border-gray-200 rounded px-3 py-1.5 text-gray-800 break-all">maria@empresa.com</span>
+                  <span className="text-gray-400 font-sans font-bold text-lg sm:text-xl">→</span>
+                  <span className="bg-white border border-gray-200 rounded px-3 py-1.5 text-teal-700 break-all text-xs">3f4a7c2e8b1d9a0f...</span>
+                </div>
+                <p className="text-xs text-gray-500 mt-3">El proceso de transformación es irreversible: a partir del código no es posible recuperar el email original.</p>
+              </div>
             </div>
 
             <div className="border border-gray-200 rounded-xl p-6">
