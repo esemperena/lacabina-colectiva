@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     // Enviar email al iniciador con su enlace de acceso
     const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     try {
-      await enviarMagicLink(iniciador_email, `${APP_URL}/auth/${tokenIniciador}`);
+      await enviarMagicLink(iniciador_email, `${APP_URL}/api/auth/verify/${tokenIniciador}`);
     } catch (emailError) {
       console.error('Error sending initiator access email:', emailError);
     }

@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Send magic link email
-      const link = `${APP_URL}/auth/${newToken}`;
+      const link = `${APP_URL}/api/auth/verify/${newToken}`;
       try {
         await enviarMagicLink(email, link);
       } catch (emailError) {

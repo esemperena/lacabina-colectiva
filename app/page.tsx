@@ -44,49 +44,35 @@ export default function Home() {
       {/* How It Works */}
       <section className="bg-gray-50 py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-gray-900 mb-16 text-center">Cómo funciona</h3>
+          <h3 className="text-3xl font-bold text-gray-900 mb-4 text-center">Cómo funciona</h3>
+          <p className="text-gray-600 text-center mb-16 max-w-2xl mx-auto">Un proceso estructurado en cuatro fases que garantiza la representación legítima y anónima de todos los empleados.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Phase 1 */}
             <div className="bg-white p-8 rounded-xl border-2 border-indigo-200">
-              <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">
-                1
-              </div>
+              <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">1</div>
               <h4 className="text-xl font-semibold text-gray-900 mb-3">Invitaciones</h4>
-              <p className="text-gray-600">
-                El primer empleado inicia el proceso e invita a colegas a través de correo anónimo.
+              <p className="text-gray-600 text-justify leading-relaxed">
+                Un empleado inicia el proceso de forma completamente anónima: introduce el correo de RRHH y los de sus compañeros. La plataforma envía invitaciones individuales sin revelar quién las originó. RRHH es notificado del inicio del proceso y puede colaborar compartiendo más correos para aumentar la participación.
               </p>
             </div>
-
-            {/* Phase 2 */}
             <div className="bg-white p-8 rounded-xl border-2 border-indigo-200">
-              <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">
-                2
-              </div>
+              <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">2</div>
               <h4 className="text-xl font-semibold text-gray-900 mb-3">Propuestas</h4>
-              <p className="text-gray-600">
-                Los empleados envían propuestas, quejas y consultas. Votan y el sistema genera un reporte PDF.
+              <p className="text-gray-600 text-justify leading-relaxed">
+                Una vez alcanzado el umbral de participación, los empleados pueden enviar propuestas, quejas, consultas y sugerencias, de forma anónima o con nombre. El resto de compañeros vota para priorizar las más importantes. Al finalizar esta fase, la inteligencia artificial genera automáticamente un informe PDF con el análisis de las inquietudes más votadas, que se comparte con empleados y RRHH.
               </p>
             </div>
-
-            {/* Phase 3 */}
             <div className="bg-white p-8 rounded-xl border-2 border-indigo-200">
-              <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">
-                3
-              </div>
+              <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">3</div>
               <h4 className="text-xl font-semibold text-gray-900 mb-3">Representantes</h4>
-              <p className="text-gray-600">
-                Se seleccionan representantes por voluntariado o sorteo para llevar las propuestas.
+              <p className="text-gray-600 text-justify leading-relaxed">
+                Se abre un período de voluntariado donde cualquier empleado puede presentarse como candidato a representante. Si hay suficientes voluntarios, el resto vota para elegir a sus favoritos. Si no los hay, la plataforma realiza un sorteo entre todos los empleados. Los seleccionados pueden aceptar o rechazar su designación hasta completar el número legal de representantes.
               </p>
             </div>
-
-            {/* Phase 4 */}
             <div className="bg-white p-8 rounded-xl border-2 border-indigo-200">
-              <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">
-                4
-              </div>
+              <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">4</div>
               <h4 className="text-xl font-semibold text-gray-900 mb-3">Diálogo</h4>
-              <p className="text-gray-600">
-                Los representantes dialogan con la dirección de la empresa sobre las propuestas.
+              <p className="text-gray-600 text-justify leading-relaxed">
+                Los representantes elegidos inician un diálogo formal con la dirección de la empresa. La plataforma facilita la comunicación estructurada y ofrece recomendaciones a ambas partes para que las reuniones sean productivas. El objetivo es llegar a acuerdos concretos sobre las propuestas priorizadas por los empleados.
               </p>
             </div>
           </div>
