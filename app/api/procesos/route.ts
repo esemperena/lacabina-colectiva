@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { hashEmail, generarToken } from '@/lib/utils';
-import { enviarInvitacionEmpleado, enviarNotificacionRRHH } from '@/lib/email';
+import { enviarInvitacionEmpleado, enviarNotificacionRRHH, enviarMagicLink } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -95,6 +95,14 @@ export async function POST(request: NextRequest) {
         { error: 'Failed to create participante' },
         { status: 500 }
       );
+    }
+
+    // Enviar email al iniciador con su enlace de acceso
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    try {
+      await enviarMagicLink(iniciador_email, `${APP_URL}/auth/${tokenIniciador}`);
+    } catch (emailError) {
+      console.error('Error sending initiator access email:', emailError);
     }
 
     // Create invitations for colleagues and send emails
