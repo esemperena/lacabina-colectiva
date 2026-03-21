@@ -1,47 +1,14 @@
-'use client';
-
-import { useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { supabaseAdmin } from '@/lib/supabase';
+import { redirect } from 'next/navigation';
 
 interface Propuesta {
   id: string;
   titulo: string;
   descripcion: string;
   tipo: 'propuesta' | 'queja' | 'consulta' | 'sugerencia';
-  votos: number;
+  votos_count: number;
 }
-
-const mockPropuestas: Propuesta[] = [
-  {
-    id: '1',
-    titulo: 'Mejorar el horario de trabajo',
-    descripcion: 'Solicito la posibilidad de trabajar con horarios más flexibles, permitiendo compresión de jornada o teletrabajo algunos días.',
-    tipo: 'propuesta',
-    votos: 18,
-  },
-  {
-    id: '2',
-    titulo: 'Aumento de capacitación profesional',
-    descripcion: 'Aumentar el presupuesto anual para cursos y certificaciones profesionales para todos los empleados.',
-    tipo: 'propuesta',
-    votos: 15,
-  },
-  {
-    id: '3',
-    titulo: 'Mejorar comunicación interna',
-    descripcion: 'Necesitamos mejores canales de comunicación entre departamentos. Actualmente hay mucha desinformación.',
-    tipo: 'queja',
-    votos: 12,
-  },
-  {
-    id: '4',
-    titulo: '¿Nuevos beneficios de salud?',
-    descripcion: '¿Cuáles son los planes futuros para ampliar el paquete de beneficios de salud?',
-    tipo: 'consulta',
-    votos: 8,
-  },
-];
 
 const getTipoBadge = (tipo: string) => {
   const badges: Record<string, { bg: string; text: string; label: string }> = {
@@ -53,22 +20,36 @@ const getTipoBadge = (tipo: string) => {
   return badges[tipo] || badges.propuesta;
 };
 
-export default function RRHHPage() {
-  const params = useParams();
-  const token = params.token as string;
+export default async function RRHHPage({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}) {
+  const { token } = await params;
 
-  // Mock data
-  const mockCompany = {
-    nombre: 'TechCorp España',
-    empleados_unidos: 23,
-    empleados_totales: 45,
-    porcentaje: 51,
-  };
+  // Fetch proceso by token_rrhh
+  const { data: proceso, error: procesoError } = await supabaseAdmin
+    .from('procesos')
+    .select('*, empresa:empresas(*)')
+    .eq('token_rrhh', token)
+    .single();
 
-  const [propuestas] = useState<Propuesta[]>(mockPropuestas);
+  if (!proceso || procesoError) {
+    redirect('/');
+  }
 
-  // Sort by votes
-  const sortedPropuestas = [...propuestas].sort((a, b) => b.votos - a.votos);
+  // Fetch real propuestas
+  const { data: propuestas } = await supabaseAdmin
+    .from('propuestas')
+    .select('*')
+    .eq('proceso_id', proceso.id)
+    .order('votos_count', { ascending: false });
+
+  const listaPropuestas = propuestas || [];
+
+  // Calculate real stats
+  const empresa = proceso.empresa as { nombre: string; num_empleados: number };
+  const porcentaje = Math.round((proceso.empleados_unidos / proceso.empleados_objetivo) * 100);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -90,7 +71,7 @@ export default function RRHHPage() {
         {/* Company Info Card */}
         <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            {mockCompany.nombre}
+            {empresa.nombre}
           </h2>
           <p className="text-gray-600 mb-8">
             Estado actual del proceso de representación colectiva
@@ -102,18 +83,18 @@ export default function RRHHPage() {
               <p className="text-sm text-gray-600 mb-2">Participación de Empleados</p>
               <div className="flex items-baseline gap-2 mb-3">
                 <span className="text-3xl font-bold text-indigo-600">
-                  {mockCompany.empleados_unidos}
+                  {proceso.empleados_unidos}
                 </span>
-                <span className="text-gray-600">de {mockCompany.empleados_totales}</span>
+                <span className="text-gray-600">de {proceso.empleados_objetivo}</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                 <div
                   className="bg-indigo-600 h-full"
-                  style={{ width: `${mockCompany.porcentaje}%` }}
+                  style={{ width: `${porcentaje}%` }}
                 />
               </div>
               <p className="text-sm text-gray-600 mt-2">
-                {mockCompany.porcentaje}% de participación
+                {porcentaje}% de participación
               </p>
             </div>
 
@@ -121,7 +102,7 @@ export default function RRHHPage() {
             <div>
               <p className="text-sm text-gray-600 mb-2">Total de Propuestas</p>
               <p className="text-3xl font-bold text-indigo-600 mb-3">
-                {sortedPropuestas.length}
+                {listaPropuestas.length}
               </p>
               <p className="text-sm text-gray-600">
                 Propuestas de empleados
@@ -133,13 +114,13 @@ export default function RRHHPage() {
               <p className="text-sm text-gray-600 mb-2">Tipos de Contribuciones</p>
               <ul className="space-y-1 text-sm text-gray-600">
                 <li>
-                  <span className="font-semibold">{sortedPropuestas.filter(p => p.tipo === 'propuesta').length}</span> Propuestas
+                  <span className="font-semibold">{listaPropuestas.filter(p => p.tipo === 'propuesta').length}</span> Propuestas
                 </li>
                 <li>
-                  <span className="font-semibold">{sortedPropuestas.filter(p => p.tipo === 'queja').length}</span> Quejas
+                  <span className="font-semibold">{listaPropuestas.filter(p => p.tipo === 'queja').length}</span> Quejas
                 </li>
                 <li>
-                  <span className="font-semibold">{sortedPropuestas.filter(p => p.tipo === 'consulta').length}</span> Consultas
+                  <span className="font-semibold">{listaPropuestas.filter(p => p.tipo === 'consulta').length}</span> Consultas
                 </li>
               </ul>
             </div>
@@ -158,8 +139,8 @@ export default function RRHHPage() {
         <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-8 mb-12">
           <h3 className="text-lg font-semibold text-indigo-900 mb-4">Aumentar Participación</h3>
           <p className="text-indigo-800 mb-6">
-            Para que el proceso avance, necesitas que al menos el 10% de los empleados ({Math.ceil(mockCompany.empleados_totales * 0.1)}) se unan.
-            Actualmente tienes {mockCompany.empleados_unidos} participantes.
+            Para que el proceso avance, necesitas que al menos el 10% de los empleados ({Math.ceil(proceso.empleados_objetivo * 0.1)}) se unan.
+            Actualmente tienes {proceso.empleados_unidos} participantes.
           </p>
           <button className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
             Enviar Recordatorio a Empleados
@@ -169,49 +150,55 @@ export default function RRHHPage() {
         {/* Proposals Section */}
         <div>
           <h3 className="text-2xl font-bold text-gray-900 mb-8">
-            Propuestas Principales ({sortedPropuestas.length})
+            Propuestas Principales ({listaPropuestas.length})
           </h3>
 
-          <div className="space-y-6">
-            {sortedPropuestas.map(propuesta => {
-              const badge = getTipoBadge(propuesta.tipo);
-              return (
-                <div
-                  key={propuesta.id}
-                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${badge.bg} ${badge.text}`}
-                      >
-                        {badge.label}
-                      </span>
+          {listaPropuestas.length === 0 ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500">
+              <p>Todavía no hay propuestas. Se mostrarán aquí cuando los empleados las envíen en la Fase 2.</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {listaPropuestas.map(propuesta => {
+                const badge = getTipoBadge(propuesta.tipo);
+                return (
+                  <div
+                    key={propuesta.id}
+                    className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${badge.bg} ${badge.text}`}
+                        >
+                          {badge.label}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-600">Votos</p>
+                        <p className="text-2xl font-bold text-indigo-600">
+                          {propuesta.votos_count}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600">Votos</p>
-                      <p className="text-2xl font-bold text-indigo-600">
-                        {propuesta.votos}
-                      </p>
+
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                      {propuesta.titulo}
+                    </h4>
+                    <p className="text-gray-600 mb-4">
+                      {propuesta.descripcion}
+                    </p>
+
+                    <div className="border-t border-gray-200 pt-4">
+                      <button className="text-indigo-600 font-semibold hover:text-indigo-700 text-sm">
+                        Ver Detalles →
+                      </button>
                     </div>
                   </div>
-
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    {propuesta.titulo}
-                  </h4>
-                  <p className="text-gray-600 mb-4">
-                    {propuesta.descripcion}
-                  </p>
-
-                  <div className="border-t border-gray-200 pt-4">
-                    <button className="text-indigo-600 font-semibold hover:text-indigo-700 text-sm">
-                      Ver Detalles →
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Export/Report Section */}

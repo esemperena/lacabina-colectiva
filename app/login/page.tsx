@@ -48,7 +48,7 @@ export default function LoginPage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-3">Enlace enviado</h2>
           <p className="text-gray-600 mb-6">
-            Te hemos enviado un enlace de acceso a <strong>{email}</strong>. Revisa tu bandeja de entrada (y también la carpeta de spam).
+            Te hemos enviado un enlace de acceso a <strong>{email}</strong>. Revisa tu bandeja de entrada. Si no aparece en unos minutos, revisa también la carpeta de spam.
           </p>
           <p className="text-sm text-gray-500 mb-8">
             El enlace es válido durante 7 días.
@@ -83,9 +83,9 @@ export default function LoginPage() {
           <h1 className="text-xl font-bold text-gray-900">La Cabina Colectiva</h1>
         </Link>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Acceder a mi proceso</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Accede a tu proceso</h2>
         <p className="text-gray-600 mb-8">
-          Te enviaremos un enlace de acceso a tu correo
+          Introduce tu correo corporativo y te enviaremos un enlace de acceso directo. Sin contraseñas.
         </p>
 
         {/* Tipo Toggle */}
@@ -100,6 +100,9 @@ export default function LoginPage() {
           >
             Soy empleado
           </button>
+          {tipo === 'empleado' && (
+            <p className="text-xs text-gray-600 mt-2">Para empleados que ya se han unido a un proceso</p>
+          )}
           <button
             onClick={() => setTipo('rrhh')}
             className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${
@@ -132,7 +135,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900"
             />
           </div>
 

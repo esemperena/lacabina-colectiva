@@ -130,15 +130,15 @@ export default function IniciarPage() {
               <ul className="space-y-3 text-gray-700">
                 <li className="flex gap-3">
                   <span className="font-bold text-indigo-600">1.</span>
-                  <span>Hemos enviado invitaciones a {formData.colegas_emails.split(/[,\n]/).filter(e => e.trim()).length} colegas</span>
+                  <span>Hemos enviado invitaciones a {formData.colegas_emails.split(/[,\n]/).filter(e => e.trim()).length} compañeros</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-indigo-600">2.</span>
-                  <span>Espera a que se unan al proceso (necesitas al menos 10% de los empleados)</span>
+                  <span>Espera a que se unan suficientes compañeros. Cuando se alcance el umbral de participación, el proceso avanzará automáticamente a la Fase 2.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-indigo-600">3.</span>
-                  <span>Accede a tu dashboard usando el enlace que se envió a tu correo</span>
+                  <span>Accede al dashboard desde el enlace que te hemos enviado a tu correo.</span>
                 </li>
               </ul>
             </div>
@@ -215,7 +215,7 @@ export default function IniciarPage() {
                     name="nombre"
                     value={formData.nombre}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
                     placeholder="Ej: TechCorp"
                   />
                 </div>
@@ -228,7 +228,7 @@ export default function IniciarPage() {
                     name="sector"
                     value={formData.sector}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
                   >
                     <option value="">Selecciona un sector</option>
                     <option value="tecnología">Tecnología</option>
@@ -251,7 +251,7 @@ export default function IniciarPage() {
                     name="num_empleados"
                     value={formData.num_empleados}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
                     placeholder="Ej: 150"
                     min="1"
                   />
@@ -266,7 +266,7 @@ export default function IniciarPage() {
                     name="rrhh_email"
                     value={formData.rrhh_email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
                     placeholder="rrhh@empresa.com"
                   />
                 </div>
@@ -285,7 +285,7 @@ export default function IniciarPage() {
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Tu correo</h2>
               <p className="text-gray-600 mb-8">
-                Este es tu correo corporativo. Será hasheado y nunca se revelará públicamente.
+                Usaremos este email para enviarte el enlace de acceso al proceso. No lo almacenamos en texto plano — se convierte en un código irreversible que protege tu identidad.
               </p>
 
               <div className="space-y-6">
@@ -298,7 +298,7 @@ export default function IniciarPage() {
                     name="iniciador_email"
                     value={formData.iniciador_email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
                     placeholder="tu.email@empresa.com"
                   />
                 </div>
@@ -321,9 +321,9 @@ export default function IniciarPage() {
           {/* Step 3: Colleague Emails */}
           {step === 3 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Invita a tus colegas</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Invita a tus compañeros</h2>
               <p className="text-gray-600 mb-8">
-                Añade los correos de tus colegas. Sepáralos por coma o saltá línea.
+                Añade los correos de tus compañeros. Cuantos más se unan, más representativo será el proceso. Sepáralos por coma o por línea.
               </p>
 
               <div className="space-y-6">
@@ -336,14 +336,14 @@ export default function IniciarPage() {
                     value={formData.colegas_emails}
                     onChange={handleInputChange}
                     rows={8}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 font-mono text-sm"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 font-mono text-sm text-gray-900"
                     placeholder="colega1@empresa.com&#10;colega2@empresa.com&#10;colega3@empresa.com"
                   />
                 </div>
 
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <p className="text-sm text-green-800">
-                    <span className="font-semibold">Invitaciones anónimas:</span> Los colegas recibirán una invitación anónima. No sabrán quién inició el proceso.
+                    <span className="font-semibold">Las invitaciones no revelan quién inició el proceso.</span> Cada compañero recibirá un enlace único y anónimo.
                   </p>
                 </div>
 

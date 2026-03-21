@@ -31,26 +31,37 @@ export default async function DashboardPage({
     redirect('/login');
   }
 
-  // Mock data for demo
-  const mockData = {
-    procesoId,
-    empresa: {
-      nombre: 'TechCorp España',
-      sector: 'tecnología',
-      num_empleados: 45,
-    },
-    fase: 1 as Fase,
-    estado: 'activo',
-    empleados_unidos: 23,
-    empleados_objetivo: 45,
-    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-  };
+  // Fetch real proceso data
+  const { data: proceso, error: procesoError } = await supabaseAdmin
+    .from('procesos')
+    .select('*, empresa:empresas(*)')
+    .eq('id', procesoId)
+    .single();
 
+  if (!proceso || procesoError) {
+    redirect('/login');
+  }
+
+  interface ProcesoData {
+    id: string;
+    fase: string;
+    estado: string;
+    empleados_unidos: number;
+    empleados_objetivo: number;
+    empresa: {
+      nombre: string;
+      sector: string;
+      num_empleados: number;
+    };
+  }
+
+  const procesoData = proceso as ProcesoData;
+  const fase = Number(procesoData.fase) as Fase;
   const porcentaje = Math.round(
-    (mockData.empleados_unidos / mockData.empleados_objetivo) * 100
+    (procesoData.empleados_unidos / procesoData.empleados_objetivo) * 100
   );
 
-  const umbralProceso = Math.ceil(mockData.empleados_objetivo * 0.1); // 10% threshold
+  const umbralProceso = Math.ceil(procesoData.empleados_objetivo * 0.1); // 10% threshold
 
   const getPhaseTitle = (fase: Fase): string => {
     const titles: Record<Fase, string> = {
@@ -91,7 +102,7 @@ export default async function DashboardPage({
         {/* Bread crumb & Title */}
         <div className="mb-8">
           <p className="text-sm text-gray-600 mb-2">
-            {mockData.empresa.nombre}
+            {procesoData.empresa.nombre}
           </p>
           <h2 className="text-3xl font-bold text-gray-900">Dashboard del Proceso</h2>
         </div>
@@ -103,9 +114,9 @@ export default async function DashboardPage({
               <div key={phase} className="flex flex-col items-center">
                 <div
                   className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg mb-2 ${
-                    phase <= mockData.fase
+                    phase <= fase
                       ? 'bg-indigo-600 text-white'
-                      : phase === mockData.fase + 1
+                      : phase === fase + 1
                         ? 'bg-indigo-100 text-indigo-600 border-2 border-indigo-600'
                         : 'bg-gray-200 text-gray-600'
                   }`}
@@ -128,10 +139,10 @@ export default async function DashboardPage({
 
           <div className="border-t border-gray-200 pt-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              {getPhaseTitle(mockData.fase)}
+              {getPhaseTitle(fase)}
             </h3>
             <p className="text-gray-600 mb-6">
-              {getPhaseDescription(mockData.fase)}
+              {getPhaseDescription(fase)}
             </p>
           </div>
         </div>
@@ -143,7 +154,7 @@ export default async function DashboardPage({
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-700 font-medium">
-                {mockData.empleados_unidos} de {mockData.empleados_objetivo} empleados se han unido
+                {procesoData.empleados_unidos} de {procesoData.empleados_objetivo} empleados se han unido
               </span>
               <span className="text-2xl font-bold text-indigo-600">{porcentaje}%</span>
             </div>
@@ -157,10 +168,10 @@ export default async function DashboardPage({
             </div>
           </div>
 
-          {mockData.fase === 1 && (
+          {fase === 1 && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
               <p className="text-sm text-blue-800">
-                <span className="font-semibold">Umbral para avanzar:</span> Se necesita al menos {umbralProceso} empleados ({Math.round((umbralProceso / mockData.empleados_objetivo) * 100)}%) para que el proceso avance a la siguiente fase.
+                <span className="font-semibold">Umbral para avanzar:</span> Se necesita al menos {umbralProceso} empleados ({Math.round((umbralProceso / procesoData.empleados_objetivo) * 100)}%) para que el proceso avance a la siguiente fase.
               </p>
             </div>
           )}
@@ -169,7 +180,7 @@ export default async function DashboardPage({
         {/* Phase-Specific Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Sharing Instructions (Phase 1) */}
-          {mockData.fase === 1 && (
+          {fase === 1 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Instrucciones para Compartir</h3>
               <div className="space-y-4 text-sm text-gray-700">
@@ -192,7 +203,7 @@ export default async function DashboardPage({
           )}
 
           {/* Proposals Link (Phase 2+) */}
-          {mockData.fase >= 2 && (
+          {fase >= 2 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Propuestas y Votación</h3>
               <p className="text-gray-600 mb-6">
@@ -208,7 +219,7 @@ export default async function DashboardPage({
           )}
 
           {/* Representative Selection (Phase 3) */}
-          {mockData.fase === 3 && (
+          {fase === 3 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Selección de Representantes</h3>
               <p className="text-gray-600 mb-6">
@@ -221,7 +232,7 @@ export default async function DashboardPage({
           )}
 
           {/* Dialogue Phase (Phase 4) */}
-          {mockData.fase === 4 && (
+          {fase === 4 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Fase de Diálogo</h3>
               <p className="text-gray-600 mb-6">

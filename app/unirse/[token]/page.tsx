@@ -169,7 +169,7 @@ export default function UnirsePagePage() {
                 name="nombre"
                 value={formData.nombre}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
                 placeholder="Tu nombre (si lo deseas compartir)"
               />
             </div>
@@ -186,7 +186,7 @@ export default function UnirsePagePage() {
                 onChange={handleInputChange}
                 min="18"
                 max="120"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
                 placeholder="Tu edad (si lo deseas)"
               />
             </div>
@@ -200,7 +200,7 @@ export default function UnirsePagePage() {
                 name="sexo"
                 value={formData.sexo}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900"
               >
                 <option value="">Prefiero no especificar</option>
                 <option value="masculino">Masculino</option>
