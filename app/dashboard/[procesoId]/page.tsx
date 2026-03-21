@@ -1,13 +1,35 @@
-'use client';
-
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { supabaseAdmin } from '@/lib/supabase';
 
 type Fase = 1 | 2 | 3 | 4;
 
-export default function DashboardPage() {
-  const params = useParams();
-  const procesoId = params.procesoId as string;
+export default async function DashboardPage({
+  params,
+}: {
+  params: Promise<{ procesoId: string }>;
+}) {
+  // Auth check
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get('session_token')?.value;
+
+  if (!sessionToken) {
+    redirect('/login');
+  }
+
+  const { procesoId } = await params;
+
+  // Verify token and get participante
+  const { data: participante, error: participanteError } = await supabaseAdmin
+    .from('participantes')
+    .select('id, proceso_id, nombre, es_iniciador')
+    .eq('token_acceso', sessionToken)
+    .single();
+
+  if (!participante || participanteError || participante.proceso_id !== procesoId) {
+    redirect('/login');
+  }
 
   // Mock data for demo
   const mockData = {

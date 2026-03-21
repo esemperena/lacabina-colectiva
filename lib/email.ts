@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
-const FROM_EMAIL = 'onboarding@resend.dev'
+export const FROM_EMAIL = 'onboarding@resend.dev'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL!
 
 export async function enviarInvitacionEmpleado(
@@ -86,5 +86,25 @@ export async function enviarInformeRRHH(
         content: informePdf,
       },
     ],
+  })
+}
+
+export async function enviarMagicLink(email: string, link: string) {
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: 'Tu enlace de acceso — La Cabina Colectiva',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #4f46e5;">La Cabina Colectiva</h1>
+        <p>Aquí tienes tu enlace de acceso. Es válido para una sola sesión.</p>
+        <a href="${link}" style="display:inline-block; padding:12px 24px; background:#4f46e5; color:white; text-decoration:none; border-radius:8px; margin: 16px 0;">
+          Acceder al proceso
+        </a>
+        <p style="color:#999; font-size:12px; margin-top: 16px;">Si no solicitaste este enlace, ignora este email.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+        <p style="color:#999; font-size:12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+      </div>
+    `,
   })
 }
