@@ -1,19 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { generarToken } from '@/lib/utils';
+import { enviarEmailInicioFase2 } from '@/lib/email';
+
+const UMBRAL_PORCENTAJE = 0.10 // 10% de participación activa la fase 2
+
+async function intentarTransicionFase2(procesoId: string) {
+  // Fetch proceso actual
+  const { data: proceso } = await supabaseAdmin
+    .from('procesos')
+    .select('id, fase, empleados_unidos, empleados_objetivo, empresa:empresas(nombre)')
+    .eq('id', procesoId)
+    .single()
+
+  if (!proceso || proceso.fase !== '1') return
+
+  const umbral = Math.ceil(proceso.empleados_objetivo * UMBRAL_PORCENTAJE)
+  if (proceso.empleados_unidos < umbral) return
+
+  // Transition to fase 2
+  const ahora = new Date().toISOString()
+  await supabaseAdmin
+    .from('procesos')
+    .update({ fase: '2', fase2_inicio: ahora })
+    .eq('id', procesoId)
+
+  // Send emails to all participants that have email_contacto stored
+  const { data: participantes } = await supabaseAdmin
+    .from('participantes')
+    .select('id, token_acceso, email_contacto')
+    .eq('proceso_id', procesoId)
+    .not('email_contacto', 'is', null)
+
+  if (!participantes) return
+
+  const empresa = proceso.empresa as unknown as { nombre: string }
+  const nombreEmpresa = empresa?.nombre || 'tu empresa'
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app'
+
+  for (const p of participantes) {
+    if (!p.email_contacto) continue
+    // Invite link — we use a generic new invitation token for sharing
+    const enlaceInvitacion = `${APP_URL}/login`
+    try {
+      await enviarEmailInicioFase2(p.email_contacto, p.token_acceso, enlaceInvitacion, nombreEmpresa)
+    } catch (e) {
+      console.error('Error sending fase2 email to', p.email_contacto, e)
+    }
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-
     const { token, nombre, edad, sexo } = body;
 
-    // Validate token
     if (!token) {
-      return NextResponse.json(
-        { error: 'Token inválido' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Token inválido' }, { status: 400 });
     }
 
     // Look up invitacion
@@ -25,11 +68,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (invitacionError || !invitacion) {
-      console.error('Error finding invitacion:', invitacionError);
-      return NextResponse.json(
-        { error: 'Token inválido o ya utilizado' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Token inválido o ya utilizado' }, { status: 400 });
     }
 
     // Generate access token for participant
@@ -52,37 +91,27 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (participanteError || !participante) {
-      console.error('Error creating participante:', participanteError);
-      return NextResponse.json(
-        { error: 'Failed to join proceso' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'Failed to join proceso' }, { status: 500 });
     }
 
     // Mark invitacion as used
-    const { error: updateError } = await supabaseAdmin
-      .from('invitaciones')
-      .update({ usado: true })
-      .eq('id', invitacion.id);
+    await supabaseAdmin.from('invitaciones').update({ usado: true }).eq('id', invitacion.id);
 
-    if (updateError) {
-      console.error('Error marking invitacion as used:', updateError);
-      // Don't fail the request, participante was already created
-    }
+    // Check if this new participant triggers the fase 1→2 transition
+    // (done async — don't block the response)
+    intentarTransicionFase2(invitacion.proceso_id).catch(e =>
+      console.error('Error en transición fase 1→2:', e)
+    )
 
     return NextResponse.json({
       success: true,
       participante_id: participante.id,
       proceso_id: participante.proceso_id,
       token_acceso: tokenAcceso,
-      message: 'Participante joined successfully',
     });
   } catch (error) {
     console.error('Error joining proceso:', error);
-    return NextResponse.json(
-      { error: 'Failed to join proceso' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to join proceso' }, { status: 500 });
   }
 }
 
@@ -92,35 +121,21 @@ export async function GET(request: NextRequest) {
     const procesoId = searchParams.get('proceso_id');
 
     if (!procesoId) {
-      return NextResponse.json(
-        { error: 'Proceso ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Proceso ID is required' }, { status: 400 });
     }
 
-    // Count participantes for this proceso
     const { count, error } = await supabaseAdmin
       .from('participantes')
       .select('id', { count: 'exact' })
       .eq('proceso_id', procesoId);
 
     if (error) {
-      console.error('Error counting participantes:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch participantes count' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'Failed to fetch participantes count' }, { status: 500 });
     }
 
-    return NextResponse.json({
-      total: count || 0,
-      proceso_id: procesoId,
-    });
+    return NextResponse.json({ total: count || 0, proceso_id: procesoId });
   } catch (error) {
     console.error('Error fetching participantes:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch participantes' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch participantes' }, { status: 500 });
   }
 }

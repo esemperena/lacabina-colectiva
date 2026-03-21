@@ -68,6 +68,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Enforce max 6 proposals per participant
+    if (participante_id) {
+      const { data: participante } = await supabaseAdmin
+        .from('participantes')
+        .select('propuestas_enviadas')
+        .eq('id', participante_id)
+        .single();
+
+      if (participante && (participante.propuestas_enviadas || 0) >= 6) {
+        return NextResponse.json(
+          { error: 'Has alcanzado el límite de 6 ideas por participante.' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Create propuesta record
     const { data: propuesta, error } = await supabaseAdmin
       .from('propuestas')
@@ -89,6 +105,27 @@ export async function POST(request: NextRequest) {
         { error: 'Failed to create propuesta' },
         { status: 500 }
       );
+    }
+
+    // Increment propuestas_enviadas counter
+    if (participante_id) {
+      await supabaseAdmin.rpc('increment_propuestas_enviadas', { p_id: participante_id })
+        .then(({ error: rpcError }) => {
+          if (rpcError) {
+            // Fallback: manual increment
+            supabaseAdmin
+              .from('participantes')
+              .select('propuestas_enviadas')
+              .eq('id', participante_id)
+              .single()
+              .then(({ data }) => {
+                supabaseAdmin
+                  .from('participantes')
+                  .update({ propuestas_enviadas: (data?.propuestas_enviadas || 0) + 1 })
+                  .eq('id', participante_id);
+              });
+          }
+        });
     }
 
     return NextResponse.json({

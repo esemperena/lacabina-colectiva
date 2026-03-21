@@ -87,6 +87,7 @@ export async function POST(request: NextRequest) {
         token_acceso: tokenIniciador,
         es_iniciador: true,
         es_rrhh: false,
+        email_contacto: iniciador_email.toLowerCase().trim(),
       });
 
     if (participanteError) {

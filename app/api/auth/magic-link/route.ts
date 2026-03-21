@@ -58,10 +58,10 @@ export async function POST(request: NextRequest) {
       // Generate new token
       const newToken = generarToken();
 
-      // Update participante with new token
+      // Update participante with new token + store email for notifications
       const { error: updateError } = await supabaseAdmin
         .from('participantes')
-        .update({ token_acceso: newToken })
+        .update({ token_acceso: newToken, email_contacto: email.toLowerCase().trim() })
         .eq('id', participante.id);
 
       if (updateError) {

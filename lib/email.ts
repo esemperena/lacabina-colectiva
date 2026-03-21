@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 export const FROM_EMAIL = 'onboarding@resend.dev'
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL!
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app'
 
 export async function enviarInvitacionEmpleado(
   email: string,
@@ -10,18 +10,17 @@ export async function enviarInvitacionEmpleado(
   nombreEmpresa: string
 ) {
   const enlace = `${APP_URL}/unirse/${tokenAcceso}`
-
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
     subject: `Tu empresa está iniciando un proceso de representación colectiva`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #1a1a2e;">La Cabina Colectiva</h1>
+        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
         <p>Hola,</p>
         <p>Un compañero/a de <strong>${nombreEmpresa}</strong> ha iniciado un proceso para crear un comité de representación interno.</p>
         <p>Puedes unirte de forma completamente <strong>anónima</strong>. La empresa no sabrá quién se ha unido.</p>
-        <a href="${enlace}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
+        <a href="${enlace}" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
           Unirme al proceso
         </a>
         <p style="color: #666; font-size: 14px;">Este enlace es personal e intransferible.</p>
@@ -38,21 +37,20 @@ export async function enviarNotificacionRRHH(
   nombreEmpresa: string
 ) {
   const enlace = `${APP_URL}/rrhh/${tokenRRHH}`
-
   await resend.emails.send({
     from: FROM_EMAIL,
     to: emailRRHH,
     subject: `Se ha iniciado un proceso de representación colectiva en ${nombreEmpresa}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #1a1a2e;">La Cabina Colectiva</h1>
+        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
         <p>Estimado/a equipo de Recursos Humanos de <strong>${nombreEmpresa}</strong>,</p>
         <p>Un empleado ha iniciado un proceso para crear una representación colectiva en vuestra empresa.</p>
         <p><strong>¿Qué es La Cabina Colectiva?</strong></p>
         <p>Es una plataforma que facilita la creación de comités de empresa o delegados de personal de forma ordenada, transparente y respetuosa con la privacidad de los empleados.</p>
         <p><strong>¿Qué pedimos a RRHH?</strong></p>
         <p>Vuestra colaboración compartiendo los emails corporativos de todos los empleados para que puedan participar en el proceso.</p>
-        <a href="${enlace}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
+        <a href="${enlace}" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
           Ver estado del proceso
         </a>
         <p style="color: #666; font-size: 14px;">Podéis ver el número de empleados que se han unido, pero no quiénes son.</p>
@@ -74,7 +72,7 @@ export async function enviarInformeRRHH(
     subject: `Informe de la Fase 2 — ${nombreEmpresa}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #1a1a2e;">La Cabina Colectiva</h1>
+        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
         <p>La Fase 2 del proceso ha concluido.</p>
         <p>Adjuntamos el informe con las principales inquietudes y propuestas de los empleados de <strong>${nombreEmpresa}</strong>.</p>
         <p style="color: #999; font-size: 12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
@@ -96,14 +94,93 @@ export async function enviarMagicLink(email: string, link: string) {
     subject: 'Tu enlace de acceso — La Cabina Colectiva',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #4f46e5;">La Cabina Colectiva</h1>
+        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
         <p>Aquí tienes tu enlace de acceso. Es válido para una sola sesión.</p>
-        <a href="${link}" style="display:inline-block; padding:12px 24px; background:#4f46e5; color:white; text-decoration:none; border-radius:8px; margin: 16px 0;">
+        <a href="${link}" style="display:inline-block; padding:12px 24px; background:#0d9488; color:white; text-decoration:none; border-radius:8px; margin: 16px 0;">
           Acceder al proceso
         </a>
         <p style="color:#999; font-size:12px; margin-top: 16px;">Si no solicitaste este enlace, ignora este email.</p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
         <p style="color:#999; font-size:12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+      </div>
+    `,
+  })
+}
+
+export async function enviarEmailInicioFase2(
+  email: string,
+  tokenAcceso: string,
+  enlaceInvitacion: string,
+  nombreEmpresa: string
+) {
+  const enlaceAcceso = `${APP_URL}/api/auth/verify/${tokenAcceso}`
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `🗳️ Fase 2 activa — Ya puedes enviar tus propuestas en ${nombreEmpresa}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
+        <h2 style="color: #1f2937;">¡Hemos pasado a la Fase 2!</h2>
+        <p>El proceso de representación colectiva en <strong>${nombreEmpresa}</strong> ha alcanzado el número mínimo de participantes y ahora entra en la <strong>Fase 2: Propuestas</strong>.</p>
+
+        <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 16px; margin: 16px 0; border-radius: 4px;">
+          <p style="margin: 0; color: #134e4a;"><strong>¿Qué puedes hacer ahora?</strong></p>
+          <ul style="color: #134e4a; margin-top: 8px;">
+            <li>Enviar hasta <strong>6 ideas, quejas, consultas o sugerencias</strong> de forma anónima o con tu nombre.</li>
+            <li>Votar las propuestas de tus compañeros para priorizar las más importantes.</li>
+            <li>Invitar a compañeros que aún no se han unido para que también puedan participar.</li>
+          </ul>
+        </div>
+
+        <p style="color: #6b7280;">Esta fase dura <strong>2 semanas</strong> o hasta que todos los participantes indiquen que ya no tienen más propuestas.</p>
+
+        <a href="${enlaceAcceso}" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
+          Ir a mis propuestas →
+        </a>
+
+        <p style="color: #6b7280; font-size: 14px;">¿Tienes compañeros que aún no se han unido? Compárteles este enlace de invitación:<br/>
+        <a href="${enlaceInvitacion}" style="color: #0d9488;">${enlaceInvitacion}</a></p>
+
+        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+        <p style="color: #999; font-size: 12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+      </div>
+    `,
+  })
+}
+
+export async function enviarEmailInicioFase3(
+  email: string,
+  tokenAcceso: string,
+  nombreEmpresa: string
+) {
+  const enlaceAcceso = `${APP_URL}/api/auth/verify/${tokenAcceso}`
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `🙋 Fase 3 activa — Elige a tus representantes en ${nombreEmpresa}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
+        <h2 style="color: #1f2937;">¡Pasamos a la Fase 3!</h2>
+        <p>La fase de propuestas ha concluido en <strong>${nombreEmpresa}</strong>. Ahora entramos en la <strong>Fase 3: Representantes</strong>.</p>
+
+        <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 16px; margin: 16px 0; border-radius: 4px;">
+          <p style="margin: 0; color: #134e4a;"><strong>¿Qué ocurre ahora?</strong></p>
+          <ul style="color: #134e4a; margin-top: 8px;">
+            <li>Cualquier empleado puede presentarse como <strong>candidato a representante</strong>.</li>
+            <li>Si hay candidatos, el resto vota para elegir a sus favoritos.</li>
+            <li>Si no hay suficientes voluntarios, se realiza un sorteo entre todos los participantes.</li>
+            <li>Los representantes elegidos llevarán las propuestas más votadas a la dirección.</li>
+          </ul>
+        </div>
+
+        <a href="${enlaceAcceso}" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
+          Ver el proceso →
+        </a>
+
+        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+        <p style="color: #999; font-size: 12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
       </div>
     `,
   })
