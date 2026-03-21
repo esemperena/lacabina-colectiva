@@ -29,13 +29,28 @@ export async function POST(request: NextRequest) {
         .eq('email_hash', emailHash)
         .single();
 
-      // Security: don't reveal if email exists
+      // If not in participantes, check if they have a pending invitation
       if (!participante || participanteError) {
+        const { data: invitacion } = await supabaseAdmin
+          .from('invitaciones')
+          .select('token')
+          .eq('email_hash', emailHash)
+          .eq('usado', false)
+          .single();
+
+        if (invitacion) {
+          // They were invited but haven't joined yet — send them the join link
+          const joinLink = `${APP_URL}/unirse/${invitacion.token}`
+          try {
+            await enviarMagicLink(email, joinLink)
+          } catch (e) {
+            console.error('Error sending join link:', e)
+          }
+        }
+
+        // Always return success (security: don't reveal if email exists)
         return NextResponse.json(
-          {
-            success: true,
-            message: 'Si tu email está registrado, recibirás un enlace en breve.',
-          },
+          { success: true, message: 'Si tu email está registrado, recibirás un enlace en breve.' },
           { status: 200 }
         );
       }
