@@ -10,25 +10,43 @@ export default async function DashboardPage({
 }: {
   params: Promise<{ procesoId: string }>;
 }) {
-  // Auth check
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get('session_token')?.value;
-
-  if (!sessionToken) {
-    redirect('/login');
-  }
+  const adminToken = cookieStore.get('admin_token')?.value;
 
   const { procesoId } = await params;
 
-  // Verify token and get participante
-  const { data: participante, error: participanteError } = await supabaseAdmin
-    .from('participantes')
-    .select('id, proceso_id, nombre, es_iniciador')
-    .eq('token_acceso', sessionToken)
-    .single();
+  let isAdminView = false;
 
-  if (!participante || participanteError || participante.proceso_id !== procesoId) {
-    redirect('/login');
+  // Check admin bypass first
+  if (adminToken) {
+    const { data: tokenData } = await supabaseAdmin
+      .from('admin_tokens')
+      .select('id, created_at')
+      .eq('token', adminToken)
+      .single();
+    if (tokenData) {
+      const tokenAge = Date.now() - new Date(tokenData.created_at).getTime();
+      if (tokenAge <= 86400 * 1000) {
+        isAdminView = true;
+      }
+    }
+  }
+
+  // If not admin, check employee session
+  if (!isAdminView) {
+    if (!sessionToken) {
+      redirect('/login');
+    }
+    const { data: participante, error: participanteError } = await supabaseAdmin
+      .from('participantes')
+      .select('id, proceso_id, nombre, es_iniciador')
+      .eq('token_acceso', sessionToken)
+      .single();
+
+    if (!participante || participanteError || participante.proceso_id !== procesoId) {
+      redirect('/login');
+    }
   }
 
   // Fetch real proceso data
@@ -61,7 +79,7 @@ export default async function DashboardPage({
     (procesoData.empleados_unidos / procesoData.empleados_objetivo) * 100
   );
 
-  const umbralProceso = Math.ceil(procesoData.empleados_objetivo * 0.1); // 10% threshold
+  const umbralProceso = Math.ceil(procesoData.empleados_objetivo * 0.1);
 
   const getPhaseTitle = (fase: Fase): string => {
     const titles: Record<Fase, string> = {
@@ -87,23 +105,36 @@ export default async function DashboardPage({
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-70 inline-block">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-70">
             <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
           </Link>
+          {isAdminView && (
+            <Link href="/admin" className="text-sm bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-semibold">
+              ← Volver al panel admin
+            </Link>
+          )}
         </div>
       </header>
 
+      {/* Admin banner */}
+      {isAdminView && (
+        <div className="bg-amber-50 border-b border-amber-200">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <p className="text-sm text-amber-800 font-medium">
+              👁 Estás viendo este dashboard en modo administrador. Los empleados ven esta misma vista.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Bread crumb & Title */}
         <div className="mb-8">
-          <p className="text-sm text-gray-600 mb-2">
-            {procesoData.empresa.nombre}
-          </p>
+          <p className="text-sm text-gray-600 mb-2">{procesoData.empresa.nombre}</p>
           <h2 className="text-3xl font-bold text-gray-900">Dashboard del Proceso</h2>
         </div>
 
@@ -124,26 +155,15 @@ export default async function DashboardPage({
                   {phase}
                 </div>
                 <span className="text-xs text-gray-600 text-center">
-                  {
-                    [
-                      'Invitaciones',
-                      'Propuestas',
-                      'Representantes',
-                      'Diálogo',
-                    ][phase - 1]
-                  }
+                  {['Invitaciones', 'Propuestas', 'Representantes', 'Diálogo'][phase - 1]}
                 </span>
               </div>
             ))}
           </div>
 
           <div className="border-t border-gray-200 pt-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              {getPhaseTitle(fase)}
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {getPhaseDescription(fase)}
-            </p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{getPhaseTitle(fase)}</h3>
+            <p className="text-gray-600 mb-6">{getPhaseDescription(fase)}</p>
           </div>
         </div>
 
@@ -158,8 +178,6 @@ export default async function DashboardPage({
               </span>
               <span className="text-2xl font-bold text-teal-600">{porcentaje}%</span>
             </div>
-
-            {/* Progress Bar */}
             <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
                 className="bg-teal-600 h-full transition-all duration-500"
@@ -179,30 +197,17 @@ export default async function DashboardPage({
 
         {/* Phase-Specific Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Sharing Instructions (Phase 1) */}
           {fase === 1 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Instrucciones para Compartir</h3>
               <div className="space-y-4 text-sm text-gray-700">
-                <p>
-                  <span className="font-semibold block mb-2">1. Copia el enlace de invitación:</span>
-                  <code className="bg-gray-100 px-3 py-2 rounded block break-all text-xs">
-                    {typeof window !== 'undefined'
-                      ? `${window.location.origin}/unirse/token_ejemplo_12345`
-                      : 'unirse/token_ejemplo_12345'}
-                  </code>
-                </p>
-                <p>
-                  <span className="font-semibold">2. Comparte el enlace con tus colegas por Slack, correo o teams</span>
-                </p>
-                <p>
-                  <span className="font-semibold">3. Cuantos más se unan, más peso tendrán vuestras propuestas</span>
-                </p>
+                <p><span className="font-semibold block mb-1">1. Invita a más compañeros</span>Comparte el enlace que recibiste por email con quien quieras sumar al proceso.</p>
+                <p><span className="font-semibold block mb-1">2. Cuantos más, más peso tenéis</span>Llegar al umbral mínimo es necesario para avanzar al siguiente paso.</p>
+                <p><span className="font-semibold block mb-1">3. Todo es anónimo</span>Nadie sabrá quién ha invitado a quién.</p>
               </div>
             </div>
           )}
 
-          {/* Proposals Link (Phase 2+) */}
           {fase >= 2 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Propuestas y Votación</h3>
@@ -218,7 +223,6 @@ export default async function DashboardPage({
             </div>
           )}
 
-          {/* Representative Selection (Phase 3) */}
           {fase === 3 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Selección de Representantes</h3>
@@ -231,7 +235,6 @@ export default async function DashboardPage({
             </div>
           )}
 
-          {/* Dialogue Phase (Phase 4) */}
           {fase === 4 && (
             <div className="bg-white rounded-xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Fase de Diálogo</h3>

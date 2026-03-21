@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
+import UploadEmails from './UploadEmails';
+import ContactForm from './ContactForm';
 
 interface Propuesta {
   id: string;
@@ -48,7 +50,7 @@ export default async function RRHHPage({
   const listaPropuestas = propuestas || [];
 
   // Calculate real stats
-  const empresa = proceso.empresa as { nombre: string; num_empleados: number };
+  const empresa = proceso.empresa as { nombre: string; num_empleados: number; rrhh_email: string };
   const porcentaje = Math.round((proceso.empleados_unidos / proceso.empleados_objetivo) * 100);
 
   return (
@@ -68,6 +70,10 @@ export default async function RRHHPage({
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        {/* Acción pendiente: subir emails */}
+        <UploadEmails token={token} />
+
         {/* Company Info Card */}
         <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -211,6 +217,10 @@ export default async function RRHHPage({
             Descargar Reporte PDF
           </button>
         </div>
+
+        {/* Contact Form */}
+        <ContactForm token={token} empresaNombre={empresa.nombre} />
+
       </div>
     </div>
   );
