@@ -178,7 +178,7 @@ export default function PropuestasClient({
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
 
         {/* Phase 2 countdown + listo button */}
-        {fase === 2 && !isAdminView && (
+        {fase === 2 && (
           <div className="bg-teal-50 border border-teal-200 rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="font-semibold text-teal-900">Fase 2 en curso</p>
@@ -190,7 +190,11 @@ export default function PropuestasClient({
                 <p className="text-sm text-teal-700 mt-1">Dura 2 semanas o hasta que todos confirmen que no tienen más ideas.</p>
               )}
             </div>
-            {!yaListo ? (
+            {isAdminView ? (
+              <span className="text-sm text-amber-700 font-semibold bg-amber-100 px-4 py-2 rounded-lg">
+                👁 Vista admin — solo lectura
+              </span>
+            ) : !yaListo ? (
               <button
                 onClick={handleListo}
                 disabled={marcandoListo}
@@ -206,7 +210,22 @@ export default function PropuestasClient({
           </div>
         )}
 
-        {/* Submit form — only phase 2, non-admin, under limit */}
+        {/* Admin placeholder for the form area */}
+        {fase === 2 && isAdminView && (
+          <div className="bg-white rounded-xl border border-gray-200 p-8 opacity-60">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900">Enviar una idea</h2>
+              <span className="text-sm font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-700">
+                Vista admin — los empleados pueden enviar ideas aquí
+              </span>
+            </div>
+            <div className="bg-gray-50 border border-dashed border-gray-300 rounded-lg p-6 text-center text-gray-400 text-sm">
+              Formulario disponible para los participantes del proceso
+            </div>
+          </div>
+        )}
+
+        {/* Submit form — only phase 2, under limit */}
         {fase === 2 && !isAdminView && (
           <div className="bg-white rounded-xl border border-gray-200 p-8">
             <div className="flex items-center justify-between mb-6">
