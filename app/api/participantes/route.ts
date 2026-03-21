@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// TODO: Connect to Supabase when available
-// For now, using mock implementation
+import { supabaseAdmin } from '@/lib/supabase';
+import { generarToken } from '@/lib/utils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,30 +16,64 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Verify token exists in database
-    // TODO: Check if token hasn't been used yet
-    // TODO: Create participante record in Supabase
-    // TODO: Hash email if available
-    // TODO: Generate access token for participant
+    // Look up invitacion
+    const { data: invitacion, error: invitacionError } = await supabaseAdmin
+      .from('invitaciones')
+      .select('*')
+      .eq('token', token)
+      .eq('usado', false)
+      .single();
 
-    const procesoId = `proc_${Math.random().toString(36).substr(2, 9)}`;
-    const participanteId = `part_${Math.random().toString(36).substr(2, 9)}`;
-    const tokenAcceso = `token_acc_${Math.random().toString(36).substr(2, 16)}`;
+    if (invitacionError || !invitacion) {
+      console.error('Error finding invitacion:', invitacionError);
+      return NextResponse.json(
+        { error: 'Token inválido o ya utilizado' },
+        { status: 400 }
+      );
+    }
 
-    console.log('[MOCK] Participante joined:', {
-      token,
-      participanteId,
-      procesoId,
-      nombre: nombre || 'anonymous',
-      edad: edad || 'not provided',
-      sexo: sexo || 'not specified',
-      tokenAcceso,
-    });
+    // Generate access token for participant
+    const tokenAcceso = generarToken();
+
+    // Insert participante
+    const { data: participante, error: participanteError } = await supabaseAdmin
+      .from('participantes')
+      .insert({
+        proceso_id: invitacion.proceso_id,
+        email_hash: invitacion.email_hash,
+        token_acceso: tokenAcceso,
+        es_iniciador: false,
+        es_rrhh: false,
+        nombre: nombre || null,
+        edad: edad || null,
+        sexo: sexo || null,
+      })
+      .select()
+      .single();
+
+    if (participanteError || !participante) {
+      console.error('Error creating participante:', participanteError);
+      return NextResponse.json(
+        { error: 'Failed to join proceso' },
+        { status: 500 }
+      );
+    }
+
+    // Mark invitacion as used
+    const { error: updateError } = await supabaseAdmin
+      .from('invitaciones')
+      .update({ usado: true })
+      .eq('id', invitacion.id);
+
+    if (updateError) {
+      console.error('Error marking invitacion as used:', updateError);
+      // Don't fail the request, participante was already created
+    }
 
     return NextResponse.json({
       success: true,
-      participante_id: participanteId,
-      proceso_id: procesoId,
+      participante_id: participante.id,
+      proceso_id: participante.proceso_id,
       token_acceso: tokenAcceso,
       message: 'Participante joined successfully',
     });
@@ -65,14 +98,24 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Fetch participantes count from Supabase
-    // Mock response
-    const mockParticipantes = {
-      total: 23,
-      proceso_id: procesoId,
-    };
+    // Count participantes for this proceso
+    const { count, error } = await supabaseAdmin
+      .from('participantes')
+      .select('id', { count: 'exact' })
+      .eq('proceso_id', procesoId);
 
-    return NextResponse.json(mockParticipantes);
+    if (error) {
+      console.error('Error counting participantes:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch participantes count' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      total: count || 0,
+      proceso_id: procesoId,
+    });
   } catch (error) {
     console.error('Error fetching participantes:', error);
     return NextResponse.json(

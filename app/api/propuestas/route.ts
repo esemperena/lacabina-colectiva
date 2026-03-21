@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// TODO: Connect to Supabase when available
-// For now, using mock implementation
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,32 +13,22 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Fetch propuestas from Supabase
-    // Mock response
-    const mockPropuestas = [
-      {
-        id: '1',
-        proceso_id: procesoId,
-        titulo: 'Mejorar el horario de trabajo',
-        descripcion: 'Solicito la posibilidad de trabajar con horarios más flexibles.',
-        tipo: 'propuesta',
-        es_anonima: true,
-        votos_count: 18,
-        created_at: new Date().toISOString(),
-      },
-      {
-        id: '2',
-        proceso_id: procesoId,
-        titulo: 'Aumento de capacitación profesional',
-        descripcion: 'Aumentar el presupuesto anual para cursos y certificaciones.',
-        tipo: 'propuesta',
-        es_anonima: true,
-        votos_count: 15,
-        created_at: new Date().toISOString(),
-      },
-    ];
+    // Fetch propuestas ordered by votes
+    const { data: propuestas, error } = await supabaseAdmin
+      .from('propuestas')
+      .select('*')
+      .eq('proceso_id', procesoId)
+      .order('votos_count', { ascending: false });
 
-    return NextResponse.json(mockPropuestas);
+    if (error) {
+      console.error('Error fetching propuestas:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch propuestas' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(propuestas || []);
   } catch (error) {
     console.error('Error fetching propuestas:', error);
     return NextResponse.json(
@@ -60,6 +48,7 @@ export async function POST(request: NextRequest) {
       descripcion,
       tipo,
       es_anonima,
+      participante_id,
     } = body;
 
     // Validate required fields
@@ -79,28 +68,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Create propuesta record in Supabase
-    const propuestaId = `prop_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // Create propuesta record
+    const { data: propuesta, error } = await supabaseAdmin
+      .from('propuestas')
+      .insert({
+        proceso_id,
+        titulo,
+        descripcion,
+        tipo,
+        es_anonima: es_anonima || false,
+        participante_id: participante_id || null,
+        votos_count: 0,
+      })
+      .select()
+      .single();
 
-    console.log('[MOCK] Propuesta created:', {
-      propuestaId,
-      proceso_id,
-      titulo,
-      descripcion,
-      tipo,
-      es_anonima,
-    });
+    if (error || !propuesta) {
+      console.error('Error creating propuesta:', error);
+      return NextResponse.json(
+        { error: 'Failed to create propuesta' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      id: propuestaId,
-      proceso_id,
-      titulo,
-      descripcion,
-      tipo,
-      es_anonima,
-      votos_count: 0,
-      created_at: new Date().toISOString(),
+      ...propuesta,
     });
   } catch (error) {
     console.error('Error creating propuesta:', error);

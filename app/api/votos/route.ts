@@ -1,41 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// TODO: Connect to Supabase when available
-// For now, using mock implementation
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { proceso_id, propuesta_id } = body;
+    const { propuesta_id, participante_id } = body;
 
     // Validate required fields
-    if (!proceso_id || !propuesta_id) {
+    if (!propuesta_id || !participante_id) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    // TODO: Check if participante already voted on this propuesta
-    // TODO: Create voto record in Supabase
-    // TODO: Update propuesta votos_count
-    // TODO: Handle vote removal if already voted
+    // Check if vote already exists
+    const { data: existingVoto, error: checkError } = await supabaseAdmin
+      .from('votos')
+      .select('id')
+      .eq('propuesta_id', propuesta_id)
+      .eq('participante_id', participante_id)
+      .single();
 
-    const votoId = `vote_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    if (checkError && checkError.code !== 'PGRST116') {
+      // PGRST116 means no rows found, which is expected
+      console.error('Error checking existing vote:', checkError);
+      return NextResponse.json(
+        { error: 'Failed to check vote status' },
+        { status: 500 }
+      );
+    }
 
-    console.log('[MOCK] Vote recorded:', {
-      votoId,
-      proceso_id,
-      propuesta_id,
-    });
+    // If vote exists, delete it (toggle off)
+    if (existingVoto) {
+      const { error: deleteError } = await supabaseAdmin
+        .from('votos')
+        .delete()
+        .eq('id', existingVoto.id);
+
+      if (deleteError) {
+        console.error('Error deleting vote:', deleteError);
+        return NextResponse.json(
+          { error: 'Failed to remove vote' },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        voted: false,
+        message: 'Vote removed',
+      });
+    }
+
+    // If vote doesn't exist, insert new one
+    const { error: insertError } = await supabaseAdmin
+      .from('votos')
+      .insert({
+        propuesta_id,
+        participante_id,
+      });
+
+    if (insertError) {
+      console.error('Error creating vote:', insertError);
+      return NextResponse.json(
+        { error: 'Failed to create vote' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      voto_id: votoId,
-      proceso_id,
-      propuesta_id,
-      created_at: new Date().toISOString(),
+      voted: true,
+      message: 'Vote recorded',
     });
   } catch (error) {
     console.error('Error recording vote:', error);
@@ -58,14 +96,24 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Fetch vote count from Supabase
-    // Mock response
-    const mockVotes = {
-      propuesta_id: propuestaId,
-      votos_count: 18,
-    };
+    // Fetch vote count from Supabase
+    const { count, error } = await supabaseAdmin
+      .from('votos')
+      .select('id', { count: 'exact' })
+      .eq('propuesta_id', propuestaId);
 
-    return NextResponse.json(mockVotes);
+    if (error) {
+      console.error('Error fetching vote count:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch vote count' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      propuesta_id: propuestaId,
+      votos_count: count || 0,
+    });
   } catch (error) {
     console.error('Error fetching votes:', error);
     return NextResponse.json(
