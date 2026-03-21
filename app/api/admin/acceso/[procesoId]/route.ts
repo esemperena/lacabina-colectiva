@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { cookies } from 'next/headers'
 
 export async function GET(
   request: NextRequest,
@@ -8,9 +7,8 @@ export async function GET(
 ) {
   const { procesoId } = await params
 
-  // Verify admin session
-  const cookieStore = await cookies()
-  const adminToken = cookieStore.get('admin_token')?.value
+  // Read cookie directly from the request object (more reliable in Route Handlers)
+  const adminToken = request.cookies.get('admin_token')?.value
 
   if (!adminToken) {
     return NextResponse.redirect(new URL('/admin/login', request.url))

@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { cookies } from 'next/headers'
 import { Resend } from 'resend'
 
 export async function GET(request: NextRequest) {
-  // Verify admin session
-  const cookieStore = await cookies()
-  const adminToken = cookieStore.get('admin_token')?.value
+  // Read cookie directly from request (more reliable in Route Handlers)
+  const adminToken = request.cookies.get('admin_token')?.value
 
   if (!adminToken) {
     return NextResponse.json({ error: 'No admin token' }, { status: 401 })
