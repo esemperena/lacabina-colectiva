@@ -12,16 +12,19 @@ export default async function AdminPage() {
     redirect('/admin/login')
   }
 
-  // Verify admin token exists and isn't expired
-  // (token is marked used, so we verify it exists in DB at all — used=true means it was valid)
+  // Verify admin token exists and was created within the last 24 hours
   const { data: tokenData } = await supabaseAdmin
     .from('admin_tokens')
-    .select('id')
+    .select('id, created_at')
     .eq('token', adminToken)
-    .eq('used', true)
     .single()
 
   if (!tokenData) {
+    redirect('/admin/login')
+  }
+
+  const tokenAge = Date.now() - new Date(tokenData.created_at).getTime()
+  if (tokenAge > 86400 * 1000) {
     redirect('/admin/login')
   }
 
