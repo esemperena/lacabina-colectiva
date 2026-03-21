@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.URL || 'https://astounding-kashata-8c4839.netlify.app';
 
     if (tipo === 'empleado') {
       // Hash email for employee lookup

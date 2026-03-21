@@ -34,20 +34,6 @@ export default async function AdminPage() {
     .select('*, empresa:empresas(*)')
     .order('created_at', { ascending: false })
 
-  // Fetch initiator tokens for each proceso (for direct access links)
-  const procesoIds = (procesos || []).map((p: any) => p.id)
-  const { data: iniciadores } = await supabaseAdmin
-    .from('participantes')
-    .select('proceso_id, token_acceso')
-    .in('proceso_id', procesoIds.length > 0 ? procesoIds : ['none'])
-    .eq('es_iniciador', true)
-
-  const iniciadorTokenMap: Record<string, string> = {}
-  for (const ini of iniciadores || []) {
-    iniciadorTokenMap[ini.proceso_id] = ini.token_acceso
-  }
-
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app'
 
   const lista = procesos || []
 
@@ -133,16 +119,14 @@ export default async function AdminPage() {
                       >
                         Panel RRHH →
                       </a>
-                      {iniciadorTokenMap[proceso.id] && (
-                        <a
-                          href={`${APP_URL}/api/auth/verify/${iniciadorTokenMap[proceso.id]}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-center px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors"
-                        >
-                          🔑 Acceder como iniciador →
-                        </a>
-                      )}
+                      <a
+                        href={`/api/admin/acceso/${proceso.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-center px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors"
+                      >
+                        🔑 Acceder como iniciador →
+                      </a>
                       <span className="text-center px-4 py-2 bg-gray-100 text-gray-500 rounded-lg text-sm">
                         ID: <code className="text-xs">{proceso.id.slice(0, 8)}…</code>
                       </span>
