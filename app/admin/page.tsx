@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { supabaseAdmin } from '@/lib/supabase'
+import AvanzarFaseButton from './AvanzarFaseButton'
 
 export default async function AdminPage() {
   // Auth check
@@ -33,7 +34,6 @@ export default async function AdminPage() {
     .from('procesos')
     .select('*, empresa:empresas(*)')
     .order('created_at', { ascending: false })
-
 
   const lista = procesos || []
 
@@ -120,13 +120,18 @@ export default async function AdminPage() {
                         Panel RRHH →
                       </a>
                       <a
-                        href={`/api/admin/acceso/${proceso.id}`}
+                        href={`/dashboard/${proceso.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-center px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors"
+                        className="text-center px-4 py-2 bg-slate-700 text-white rounded-lg text-sm font-semibold hover:bg-slate-800 transition-colors"
                       >
-                        🔑 Acceder como iniciador →
+                        Dashboard Empleados →
                       </a>
+                      <AvanzarFaseButton
+                        procesoId={proceso.id}
+                        faseActual={Number(proceso.fase)}
+                        empresaNombre={empresa?.nombre}
+                      />
                       <span className="text-center px-4 py-2 bg-gray-100 text-gray-500 rounded-lg text-sm">
                         ID: <code className="text-xs">{proceso.id.slice(0, 8)}…</code>
                       </span>
