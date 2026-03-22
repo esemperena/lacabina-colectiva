@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import DashboardCarousel from './DashboardCarousel';
 
 export const metadata = {
   title: 'Cómo funciona — La Cabina Colectiva',
@@ -113,6 +114,15 @@ export default function ComoFuncionaPage() {
               ))}
             </div>
           </div>
+        </section>
+
+        {/* Carousel */}
+        <section>
+          <h2 className="text-3xl font-bold text-gray-900 mb-3">Vista previa real</h2>
+          <p className="text-gray-600 text-lg leading-relaxed mb-6">
+            Así es como se ven los dashboards en cada fase del proceso, tanto para los empleados como para el equipo de RRHH. Usa los botones para cambiar de vista y de fase.
+          </p>
+          <DashboardCarousel />
         </section>
 
         {/* Fase 1 */}

@@ -126,10 +126,12 @@ export default async function DashboardPage({
   const representantesNecesarios = calcularRepresentantesNecesarios(totalEmpleados);
   let voluntariosActuales = 0;
   if (fase === 3) {
-    const { count } = await supabaseAdmin
-      .from('participantes').select('id', { count: 'exact', head: true })
-      .eq('proceso_id', procesoId).eq('es_voluntario', true);
-    voluntariosActuales = count || 0;
+    try {
+      const { count, error: volError } = await supabaseAdmin
+        .from('participantes').select('id', { count: 'exact', head: true })
+        .eq('proceso_id', procesoId).eq('es_voluntario', true);
+      if (!volError) voluntariosActuales = count || 0;
+    } catch { /* columna puede no existir aún */ }
   }
 
   const { data: anunciosData } = await supabaseAdmin
