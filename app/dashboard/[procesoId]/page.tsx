@@ -121,7 +121,9 @@ export default async function DashboardPage({
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
   const inviteLink = `${APP_URL}/invitar/${procesoId}`;
 
-  const representantesNecesarios = calcularRepresentantesNecesarios(procesoData.empresa.num_empleados);
+  // Use empleados_objetivo (stored directly on procesos) as fallback if empresa.num_empleados is missing
+  const totalEmpleados = procesoData.empresa?.num_empleados || procesoData.empleados_objetivo || 0;
+  const representantesNecesarios = calcularRepresentantesNecesarios(totalEmpleados);
   let voluntariosActuales = 0;
   if (fase === 3) {
     const { count } = await supabaseAdmin

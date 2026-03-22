@@ -37,9 +37,14 @@ export default async function Home() {
               </div>
               <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
             </div>
-            <Link href="/login" className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors text-sm">
-              Accede a tu proceso
-            </Link>
+            <nav className="flex items-center gap-6">
+              <Link href="/como-funciona" className="text-sm font-semibold text-gray-600 hover:text-teal-600 transition-colors">
+                Cómo funciona
+              </Link>
+              <Link href="/login" className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors text-sm">
+                Accede a tu proceso
+              </Link>
+            </nav>
           </div>
         </div>
       </header>
