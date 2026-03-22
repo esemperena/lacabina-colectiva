@@ -63,6 +63,7 @@ export default async function DashboardPage({
   let misPropostas = 0;
   let listoFase2 = false;
   let esVoluntario = false;
+  let nombreEmpleado: string | null = null;
 
   if (adminToken) {
     const { data: tokenData } = await supabaseAdmin
@@ -90,13 +91,16 @@ export default async function DashboardPage({
     if (!sessionToken) redirect('/login');
     const { data: participante, error: participanteError } = await supabaseAdmin
       .from('participantes')
-      .select('id, proceso_id, nombre, es_iniciador, propuestas_enviadas, listo_fase2, es_voluntario')
+      .select('id, proceso_id, nombre, apellidos, es_iniciador, propuestas_enviadas, listo_fase2, es_voluntario')
       .eq('token_acceso', sessionToken).single();
     if (!participante || participanteError || participante.proceso_id !== procesoId) redirect('/login');
     participanteId = participante.id;
     misPropostas = participante.propuestas_enviadas || 0;
     listoFase2 = participante.listo_fase2 || false;
     esVoluntario = participante.es_voluntario || false;
+    const nombre = participante.nombre || '';
+    const apellidos = participante.apellidos || '';
+    nombreEmpleado = [nombre, apellidos].filter(Boolean).join(' ') || null;
   }
 
   const { data: proceso, error: procesoError } = await supabaseAdmin
@@ -282,6 +286,7 @@ export default async function DashboardPage({
               isAdminView={false}
               empresaNombre={procesoData.empresa.nombre}
               fase2FinalEn={fase2FinalEn}
+              nombreEmpleado={nombreEmpleado}
             />
           </div>
         )}
@@ -329,6 +334,7 @@ export default async function DashboardPage({
               isAdminView={false}
               empresaNombre={procesoData.empresa.nombre}
               fase2FinalEn={fase2FinalEn}
+              nombreEmpleado={nombreEmpleado}
             />
           </div>
         )}
@@ -347,6 +353,7 @@ export default async function DashboardPage({
               isAdminView={false}
               empresaNombre={procesoData.empresa.nombre}
               fase2FinalEn={fase2FinalEn}
+              nombreEmpleado={nombreEmpleado}
             />
           </div>
         )}

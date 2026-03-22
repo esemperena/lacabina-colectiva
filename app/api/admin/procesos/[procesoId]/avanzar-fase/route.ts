@@ -47,9 +47,14 @@ export async function POST(
 
   const nuevaFase = faseActual + 1;
 
+  const updateData: Record<string, unknown> = { fase: nuevaFase };
+  if (nuevaFase === 2) {
+    updateData.fase2_inicio = new Date().toISOString();
+  }
+
   const { error: updateError } = await supabaseAdmin
     .from('procesos')
-    .update({ fase: nuevaFase })
+    .update(updateData)
     .eq('id', procesoId);
 
   if (updateError) {

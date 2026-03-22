@@ -32,6 +32,7 @@ interface Props {
   isAdminView: boolean;
   empresaNombre: string;
   fase2FinalEn?: string | null;
+  nombreEmpleado?: string | null;
 }
 
 const MAX_PROPUESTAS = 6;
@@ -45,6 +46,7 @@ export default function PropuestasClient({
   listoFase2,
   isAdminView,
   fase2FinalEn,
+  nombreEmpleado,
 }: Props) {
   const [propuestas, setPropuestas] = useState<Propuesta[]>(propuestasIniciales);
   const [enviadas, setEnviadas] = useState(misPropostas);
@@ -159,6 +161,18 @@ export default function PropuestasClient({
                 <input type="checkbox" id="anonima" checked={form.es_anonima} onChange={e => setForm(f => ({ ...f, es_anonima: e.target.checked }))} className="w-4 h-4 text-teal-600 rounded border-gray-300" />
                 <label htmlFor="anonima" className="text-sm text-gray-700 cursor-pointer">Enviar de forma anónima</label>
               </div>
+              {!form.es_anonima && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Nombre que aparecerá en la propuesta</label>
+                  <input
+                    type="text"
+                    readOnly
+                    value={nombreEmpleado || '(nombre no disponible)'}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm cursor-default"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Tu nombre será visible para todos los participantes del proceso.</p>
+                </div>
+              )}
               {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>}
               {exito && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">{exito}</div>}
               <button type="submit" disabled={submitting} className="w-full px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50">

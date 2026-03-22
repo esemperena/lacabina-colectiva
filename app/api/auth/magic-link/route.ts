@@ -6,7 +6,7 @@ import { enviarMagicLink } from '@/lib/email';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, tipo } = body;
+    const { email, tipo, nombre, apellidos } = body;
 
     // Validate email format
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -58,10 +58,13 @@ export async function POST(request: NextRequest) {
       // Generate new token
       const newToken = generarToken();
 
-      // Update participante with new token + store email for notifications
+      // Update participante with new token + store email and name for notifications
+      const updatePayload: Record<string, string> = { token_acceso: newToken, email_contacto: email.toLowerCase().trim() };
+      if (nombre) updatePayload.nombre = nombre;
+      if (apellidos) updatePayload.apellidos = apellidos;
       const { error: updateError } = await supabaseAdmin
         .from('participantes')
-        .update({ token_acceso: newToken, email_contacto: email.toLowerCase().trim() })
+        .update(updatePayload)
         .eq('id', participante.id);
 
       if (updateError) {

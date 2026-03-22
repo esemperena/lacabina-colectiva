@@ -8,12 +8,18 @@ type TipoLogin = 'empleado' | 'rrhh';
 export default function LoginPage() {
   const [tipo, setTipo] = useState<TipoLogin>('empleado');
   const [email, setEmail] = useState('');
+  const [nombre, setNombre] = useState('');
+  const [apellidos, setApellidos] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (tipo === 'empleado' && (!nombre.trim() || !apellidos.trim())) {
+      setError('El nombre y los apellidos son obligatorios.');
+      return;
+    }
     setLoading(true);
     setError('');
 
@@ -21,7 +27,7 @@ export default function LoginPage() {
       const response = await fetch('/api/auth/magic-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, tipo }),
+        body: JSON.stringify({ email, tipo, nombre: nombre.trim() || undefined, apellidos: apellidos.trim() || undefined }),
       });
 
       const data = await response.json();
@@ -57,6 +63,8 @@ export default function LoginPage() {
             onClick={() => {
               setSent(false);
               setEmail('');
+              setNombre('');
+              setApellidos('');
               setError('');
             }}
             className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
@@ -91,7 +99,7 @@ export default function LoginPage() {
         {/* Tipo Toggle */}
         <div className="flex gap-2 mb-8 bg-gray-100 p-1 rounded-lg">
           <button
-            onClick={() => setTipo('empleado')}
+            onClick={() => { setTipo('empleado'); setError(''); }}
             className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${
               tipo === 'empleado'
                 ? 'bg-white text-teal-600 shadow-sm'
@@ -100,11 +108,8 @@ export default function LoginPage() {
           >
             Soy empleado
           </button>
-          {tipo === 'empleado' && (
-            <p className="text-xs text-gray-600 mt-2">Para empleados que ya se han unido a un proceso</p>
-          )}
           <button
-            onClick={() => setTipo('rrhh')}
+            onClick={() => { setTipo('rrhh'); setError(''); }}
             className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${
               tipo === 'rrhh'
                 ? 'bg-white text-teal-600 shadow-sm'
@@ -123,7 +128,42 @@ export default function LoginPage() {
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {tipo === 'empleado' && (
+            <>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="nombre" className="block text-sm font-semibold text-gray-900 mb-2">
+                    Nombre <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="nombre"
+                    type="text"
+                    placeholder="Tu nombre"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="apellidos" className="block text-sm font-semibold text-gray-900 mb-2">
+                    Apellidos <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="apellidos"
+                    type="text"
+                    placeholder="Tus apellidos"
+                    value={apellidos}
+                    onChange={(e) => setApellidos(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
           <div>
             <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
               Tu correo electrónico
@@ -138,6 +178,14 @@ export default function LoginPage() {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
             />
           </div>
+
+          {tipo === 'empleado' && (
+            <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3">
+              <p className="text-xs text-teal-800">
+                🔒 <span className="font-semibold">Tu privacidad está protegida.</span> La empresa ni el resto de compañeros sabrán que te has unido hasta que tú así lo decidas.
+              </p>
+            </div>
+          )}
 
           <button
             type="submit"

@@ -125,6 +125,11 @@ export default function IniciarPage() {
             <p className="text-lg text-gray-600 mb-8">
               Tu ID de proceso es: <span className="font-mono font-bold text-teal-600">{procesoId}</span>
             </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
+              <p className="text-sm text-blue-800">
+                <span className="font-semibold">📧 RRHH ha sido notificado.</span> Hemos enviado un email a Recursos Humanos informándoles de que se ha iniciado un proceso. En ese email <strong>no aparece quién lo ha iniciado</strong> — tu anonimato está protegido.
+              </p>
+            </div>
             <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8 text-left">
               <h3 className="font-semibold text-gray-900 mb-4">Próximos pasos:</h3>
               <ul className="space-y-3 text-gray-700">
