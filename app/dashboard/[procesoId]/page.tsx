@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase';
 import CopyButton from './CopyButton';
 import PropuestasClient from './propuestas/PropuestasClient';
+import RepresentanteSection from './RepresentanteSection';
 
 type Fase = 1 | 2 | 3 | 4;
 
@@ -24,9 +25,7 @@ function AnunciosBoard({ anuncios }: { anuncios: Anuncio[] }) {
             <div key={a.id} className="border-l-4 border-teal-400 pl-4">
               <p className="text-sm text-gray-800 whitespace-pre-wrap mb-1">{a.contenido}</p>
               <p className="text-xs text-gray-400">
-                {new Date(a.created_at).toLocaleDateString('es-ES', {
-                  day: 'numeric', month: 'long', year: 'numeric',
-                })}
+                {new Date(a.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
             </div>
           ))}
@@ -34,6 +33,18 @@ function AnunciosBoard({ anuncios }: { anuncios: Anuncio[] }) {
       )}
     </div>
   );
+}
+
+function calcularRepresentantesNecesarios(numEmpleados: number): number {
+  if (numEmpleados < 6) return 0;
+  if (numEmpleados <= 30) return 1;
+  if (numEmpleados <= 49) return 3;
+  if (numEmpleados <= 100) return 5;
+  if (numEmpleados <= 250) return 9;
+  if (numEmpleados <= 500) return 13;
+  if (numEmpleados <= 750) return 17;
+  if (numEmpleados <= 1000) return 21;
+  return 21 + Math.ceil((numEmpleados - 1000) / 1000) * 3;
 }
 
 export default async function DashboardPage({
@@ -51,6 +62,7 @@ export default async function DashboardPage({
   let participanteId = '';
   let misPropostas = 0;
   let listoFase2 = false;
+  let esVoluntario = false;
 
   // Check admin bypass first
   if (adminToken) {
@@ -61,17 +73,15 @@ export default async function DashboardPage({
       .single();
     if (tokenData) {
       const tokenAge = Date.now() - new Date(tokenData.created_at).getTime();
-      if (tokenAge <= 86400 * 1000) {
-        isAdminView = true;
-      }
+      if (tokenAge <= 86400 * 1000) isAdminView = true;
     }
   }
 
-  // If admin bypass: use initiator's participante so interactions work
+  // If admin bypass: use initiator's participante
   if (isAdminView) {
     const { data: iniciador } = await supabaseAdmin
       .from('participantes')
-      .select('id, propuestas_enviadas, listo_fase2')
+      .select('id, propuestas_enviadas, listo_fase2, es_voluntario')
       .eq('proceso_id', procesoId)
       .eq('es_iniciador', true)
       .single();
@@ -79,64 +89,62 @@ export default async function DashboardPage({
       participanteId = iniciador.id;
       misPropostas = iniciador.propuestas_enviadas || 0;
       listoFase2 = iniciador.listo_fase2 || false;
+      esVoluntario = iniciador.es_voluntario || false;
     }
   }
 
   // If not admin, check employee session
   if (!isAdminView) {
-    if (!sessionToken) {
-      redirect('/login');
-    }
+    if (!sessionToken) redirect('/login');
     const { data: participante, error: participanteError } = await supabaseAdmin
       .from('participantes')
-      .select('id, proceso_id, nombre, es_iniciador, propuestas_enviadas, listo_fase2')
+      .select('id, proceso_id, nombre, es_iniciador, propuestas_enviadas, listo_fase2, es_voluntario')
       .eq('token_acceso', sessionToken)
       .single();
 
-    if (!participante || participanteError || participante.proceso_id !== procesoId) {
-      redirect('/login');
-    }
+    if (!participante || participanteError || participante.proceso_id !== procesoId) redirect('/login');
     participanteId = participante.id;
     misPropostas = participante.propuestas_enviadas || 0;
     listoFase2 = participante.listo_fase2 || false;
+    esVoluntario = participante.es_voluntario || false;
   }
 
-  // Fetch real proceso data
+  // Fetch proceso data
   const { data: proceso, error: procesoError } = await supabaseAdmin
     .from('procesos')
     .select('*, empresa:empresas(*)')
     .eq('id', procesoId)
     .single();
 
-  if (!proceso || procesoError) {
-    redirect('/login');
-  }
+  if (!proceso || procesoError) redirect('/login');
 
   interface ProcesoData {
-    id: string;
-    fase: string;
-    estado: string;
-    empleados_unidos: number;
-    empleados_objetivo: number;
+    id: string; fase: string; estado: string;
+    empleados_unidos: number; empleados_objetivo: number;
     fase2_inicio?: string | null;
-    empresa: {
-      nombre: string;
-      sector: string;
-      num_empleados: number;
-    };
+    empresa: { nombre: string; sector: string; num_empleados: number; };
   }
 
   const procesoData = proceso as ProcesoData;
   const fase = Number(procesoData.fase) as Fase;
-  const porcentaje = Math.round(
-    (procesoData.empleados_unidos / procesoData.empleados_objetivo) * 100
-  );
-
+  const porcentaje = Math.round((procesoData.empleados_unidos / procesoData.empleados_objetivo) * 100);
   const umbralProceso = Math.ceil(procesoData.empleados_objetivo * 0.1);
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
   const inviteLink = `${APP_URL}/invitar/${procesoId}`;
 
-  // Fetch announcements from RRHH
+  // Representantes needed (fase 3)
+  const representantesNecesarios = calcularRepresentantesNecesarios(procesoData.empresa.num_empleados);
+  let voluntariosActuales = 0;
+  if (fase === 3) {
+    const { count } = await supabaseAdmin
+      .from('participantes')
+      .select('id', { count: 'exact', head: true })
+      .eq('proceso_id', procesoId)
+      .eq('es_voluntario', true);
+    voluntariosActuales = count || 0;
+  }
+
+  // Fetch announcements
   const { data: anunciosData } = await supabaseAdmin
     .from('anuncios')
     .select('id, contenido, created_at')
@@ -144,7 +152,7 @@ export default async function DashboardPage({
     .order('created_at', { ascending: false });
   const anuncios = anunciosData || [];
 
-  // Fetch propuestas data (only needed for fase >= 2)
+  // Fetch propuestas (fase >= 2)
   let propuestasConVotos: Array<{
     id: string; titulo: string; descripcion: string;
     tipo: 'propuesta' | 'queja' | 'consulta' | 'sugerencia';
@@ -162,16 +170,11 @@ export default async function DashboardPage({
     let votedIds = new Set<string>();
     if (participanteId) {
       const { data: votos } = await supabaseAdmin
-        .from('votos')
-        .select('propuesta_id')
-        .eq('participante_id', participanteId);
+        .from('votos').select('propuesta_id').eq('participante_id', participanteId);
       if (votos) votedIds = new Set(votos.map(v => v.propuesta_id));
     }
 
-    propuestasConVotos = (propuestasRaw || []).map(p => ({
-      ...p,
-      has_voted: votedIds.has(p.id),
-    }));
+    propuestasConVotos = (propuestasRaw || []).map(p => ({ ...p, has_voted: votedIds.has(p.id) }));
 
     if (procesoData.fase2_inicio) {
       const fin = new Date(new Date(procesoData.fase2_inicio).getTime() + 14 * 24 * 60 * 60 * 1000);
@@ -179,29 +182,16 @@ export default async function DashboardPage({
     }
   }
 
-  const getPhaseTitle = (fase: Fase): string => {
-    const titles: Record<Fase, string> = {
-      1: 'Fase de Invitaciones',
-      2: 'Fase de Propuestas',
-      3: 'Fase de Representantes',
-      4: 'Fase de Diálogo',
-    };
-    return titles[fase];
-  };
-
-  const getPhaseDescription = (fase: Fase): string => {
-    const descriptions: Record<Fase, string> = {
-      1: 'Esperando a que más empleados se unan al proceso. Se necesita al menos el 10% de participación para avanzar.',
-      2: 'Los empleados pueden proponer sus ideas, quejas y consultas.',
-      3: 'Se seleccionan representantes por voluntariado o sorteo para llevar las propuestas a la dirección.',
-      4: 'Los representantes dialogan con la dirección de la empresa sobre las propuestas y buscan soluciones.',
-    };
-    return descriptions[fase];
-  };
+  const getPhaseTitle = (f: Fase) => ({ 1: 'Fase de Invitaciones', 2: 'Fase de Propuestas', 3: 'Fase de Representantes', 4: 'Fase de Diálogo' }[f]);
+  const getPhaseDescription = (f: Fase) => ({
+    1: 'Esperando a que más empleados se unan al proceso. Se necesita al menos el 10% de participación para avanzar.',
+    2: 'Los empleados pueden proponer sus ideas, quejas y consultas.',
+    3: 'Se seleccionan representantes por voluntariado o sorteo para llevar las propuestas a la dirección.',
+    4: 'Los representantes dialogan con la dirección de la empresa sobre las propuestas y buscan soluciones.',
+  }[f]);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-70">
@@ -218,7 +208,6 @@ export default async function DashboardPage({
         </div>
       </header>
 
-      {/* Admin banner */}
       {isAdminView && (
         <div className="bg-amber-50 border-b border-amber-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -229,7 +218,6 @@ export default async function DashboardPage({
         </div>
       )}
 
-      {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
         <div>
           <p className="text-sm text-gray-600 mb-1">{procesoData.empresa.nombre}</p>
@@ -241,54 +229,37 @@ export default async function DashboardPage({
           <div className="flex items-center justify-between mb-8">
             {[1, 2, 3, 4].map((phase) => (
               <div key={phase} className="flex flex-col items-center">
-                <div
-                  className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg mb-2 ${
-                    phase <= fase
-                      ? 'bg-teal-600 text-white'
-                      : phase === fase + 1
-                        ? 'bg-teal-100 text-teal-600 border-2 border-teal-600'
-                        : 'bg-gray-200 text-gray-600'
-                  }`}
-                >
-                  {phase}
-                </div>
+                <div className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg mb-2 ${
+                  phase <= fase ? 'bg-teal-600 text-white' : phase === fase + 1 ? 'bg-teal-100 text-teal-600 border-2 border-teal-600' : 'bg-gray-200 text-gray-600'
+                }`}>{phase}</div>
                 <span className="text-xs text-gray-600 text-center">
                   {['Invitaciones', 'Propuestas', 'Representantes', 'Diálogo'][phase - 1]}
                 </span>
               </div>
             ))}
           </div>
-
           <div className="border-t border-gray-200 pt-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-2">{getPhaseTitle(fase)}</h3>
             <p className="text-gray-600">{getPhaseDescription(fase)}</p>
           </div>
         </div>
 
-        {/* Employee Participation Card */}
+        {/* Participation */}
         <div className="bg-white rounded-xl border border-gray-200 p-8">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Participación de Empleados</h3>
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-700 font-medium">
-                {procesoData.empleados_unidos} de {procesoData.empleados_objetivo} empleados se han unido
-              </span>
+              <span className="text-gray-700 font-medium">{procesoData.empleados_unidos} de {procesoData.empleados_objetivo} empleados se han unido</span>
               <span className="text-2xl font-bold text-teal-600">{porcentaje}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-              <div
-                className="bg-teal-600 h-full transition-all duration-500"
-                style={{ width: `${porcentaje}%` }}
-              />
+              <div className="bg-teal-600 h-full transition-all duration-500" style={{ width: `${porcentaje}%` }} />
             </div>
           </div>
-
           {fase === 1 && (
             procesoData.empleados_unidos >= umbralProceso ? (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <p className="text-sm text-green-800 font-semibold">
-                  ✅ Umbral alcanzado — el proceso avanzará a la Fase 2 en breve.
-                </p>
+                <p className="text-sm text-green-800 font-semibold">✅ Umbral alcanzado — el proceso avanzará a la Fase 2 en breve.</p>
               </div>
             ) : (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -300,7 +271,7 @@ export default async function DashboardPage({
           )}
         </div>
 
-        {/* Fase 1: Invite + Announcements side by side */}
+        {/* Fase 1: Invite + Announcements */}
         {fase === 1 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white rounded-xl border border-gray-200 p-8">
@@ -315,15 +286,32 @@ export default async function DashboardPage({
               </div>
               <CopyButton url={inviteLink} />
             </div>
-
             <AnunciosBoard anuncios={anuncios} />
           </div>
         )}
 
-        {/* Fase 2+: Propuestas incrustadas */}
+        {/* Fase 3: Representantes section FIRST (highlighted) */}
+        {fase === 3 && (
+          <div className="bg-purple-50 border-2 border-purple-300 rounded-xl p-8">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Fase activa</span>
+              <h3 className="text-xl font-bold text-purple-900">Selección de Representantes</h3>
+            </div>
+            <p className="text-purple-700 text-sm mb-6">Esta es la fase en curso. Los representantes elegidos llevarán las propuestas a la dirección de la empresa.</p>
+            <RepresentanteSection
+              procesoId={procesoId}
+              participanteId={participanteId}
+              esVoluntario={esVoluntario}
+              voluntariosActuales={voluntariosActuales}
+              representantesNecesarios={representantesNecesarios}
+            />
+          </div>
+        )}
+
+        {/* Fase 2+: Propuestas */}
         {fase >= 2 && (
           <div className="bg-white rounded-xl border border-gray-200 p-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Propuestas e Ideas</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Propuestas e ideas</h3>
             <PropuestasClient
               propuestasIniciales={propuestasConVotos}
               participanteId={participanteId}
@@ -338,32 +326,14 @@ export default async function DashboardPage({
           </div>
         )}
 
-        {/* Fase 2+: Announcements below proposals */}
+        {/* Announcements (fase 2+) */}
         {fase >= 2 && <AnunciosBoard anuncios={anuncios} />}
-
-        {/* Fase 3 */}
-        {fase === 3 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Selección de Representantes</h3>
-            <p className="text-gray-600 mb-6">
-              Se están seleccionando representantes. Puedes ofrecerte como voluntario o ser seleccionado por sorteo.
-            </p>
-            <button className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
-              Ser Representante
-            </button>
-          </div>
-        )}
 
         {/* Fase 4 */}
         {fase === 4 && (
           <div className="bg-white rounded-xl border border-gray-200 p-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Fase de Diálogo</h3>
-            <p className="text-gray-600 mb-6">
-              Los representantes están dialogando con la dirección. Aquí aparecerán las respuestas.
-            </p>
-            <button className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
-              Ver Resultados
-            </button>
+            <p className="text-gray-600">Los representantes están dialogando con la dirección. Aquí aparecerán las respuestas y acuerdos alcanzados.</p>
           </div>
         )}
       </div>

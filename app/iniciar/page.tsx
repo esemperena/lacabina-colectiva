@@ -356,8 +356,16 @@ export default function IniciarPage() {
             </div>
           )}
 
+          {/* Anonymity reminder */}
+          <div className="mt-8 mb-4 bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 flex items-start gap-3">
+            <span className="text-teal-600 text-lg mt-0.5">🔒</span>
+            <p className="text-sm text-teal-800">
+              <span className="font-semibold">Tu anonimato está protegido.</span> La empresa nunca sabrá quién inició este proceso. Tu identidad no se revela en ningún momento.
+            </p>
+          </div>
+
           {/* Buttons */}
-          <div className="flex gap-4 mt-8">
+          <div className="flex gap-4">
             {step > 1 && (
               <button
                 onClick={handleBack}
