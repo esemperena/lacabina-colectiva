@@ -2,6 +2,9 @@ import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase";
 import { LogoLink } from "@/components/Logo";
 
+// Siempre datos frescos de la base de datos (sin caché)
+export const revalidate = 0;
+
 async function getStats() {
   try {
     const [procesosRes, participantesRes] = await Promise.all([
