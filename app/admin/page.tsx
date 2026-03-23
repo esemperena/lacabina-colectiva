@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { supabaseAdmin } from '@/lib/supabase'
 import AvanzarFaseButton from './AvanzarFaseButton'
 
@@ -56,11 +57,9 @@ export default async function AdminPage() {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">C</span>
-            </div>
+            <Image src="/logo-icon.svg" alt="La Cabina Colectiva" width={40} height={40} className="sm:hidden" />
+            <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={260} height={40} className="hidden sm:block" />
             <div>
-              <h1 className="text-xl font-bold text-gray-900">La Cabina Colectiva</h1>
               <p className="text-sm text-gray-500">Panel de Administración</p>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { supabaseAdmin } from "@/lib/supabase";
 
 async function getStats() {
@@ -28,20 +29,19 @@ export default async function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* Header */}
-      <header className="border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">C</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">La Cabina Colectiva</h1>
-            </div>
-            <nav className="flex items-center gap-6">
-              <Link href="/como-funciona" className="text-sm font-semibold text-gray-600 hover:text-teal-600 transition-colors">
+            {/* Logo: icono en móvil, completo en escritorio */}
+            <Link href="/" className="flex items-center gap-0 hover:opacity-80 transition-opacity">
+              <Image src="/logo-icon.svg" alt="La Cabina Colectiva" width={40} height={40} className="sm:hidden" />
+              <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={280} height={40} className="hidden sm:block" />
+            </Link>
+            <nav className="flex items-center gap-4 sm:gap-6">
+              <Link href="/como-funciona" className="text-sm font-semibold text-gray-600 hover:text-teal-600 transition-colors hidden sm:block">
                 Cómo funciona
               </Link>
-              <Link href="/login" className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors text-sm">
+              <Link href="/login" className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-4 sm:px-5 py-2 rounded-lg transition-colors text-sm">
                 Accede a tu proceso
               </Link>
             </nav>
@@ -49,35 +49,86 @@ export default async function Home() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="flex-1">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 leading-tight max-w-3xl mx-auto">
-            Inicia un proceso de representación colectiva en tu empresa.
-          </h2>
-          <p className="text-xl text-gray-500 mb-10">Anónimo, seguro y respaldado por la ley.</p>
-          <Link href="/iniciar" className="inline-block bg-teal-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-teal-700 transition-colors text-lg">
-            Iniciar Proceso
-          </Link>
+      {/* Hero — gradient background with pattern */}
+      <section className="relative overflow-hidden">
+        {/* Decorative background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-50 via-white to-emerald-50" />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #0D9488 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+        {/* Decorative blobs */}
+        <div className="absolute top-20 -left-32 w-96 h-96 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+        <div className="absolute bottom-20 -right-32 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }} />
+
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
+          <div className="text-center max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-800 text-sm font-semibold px-4 py-1.5 rounded-full mb-8">
+              <span className="w-2 h-2 bg-teal-500 rounded-full animate-pulse" />
+              Respaldado por el Estatuto de los Trabajadores
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
+              Inicia un proceso de
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600"> representación colectiva</span>
+              {' '}en tu empresa
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Anónimo, seguro y legal. Cualquier empleado puede dar el primer paso sin que nadie sepa quién lo hizo.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/iniciar" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-teal-700 transition-all text-lg shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/30 hover:-translate-y-0.5">
+                Iniciar Proceso
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+              </Link>
+              <Link href="/como-funciona" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-gray-700 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all text-lg border border-gray-200">
+                Ver cómo funciona
+              </Link>
+            </div>
+          </div>
+
+          {/* Trust signals */}
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-400">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+              SHA-256 hash
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+              RGPD compliant
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+              Sin contraseñas
+            </div>
+          </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="bg-gray-50 py-24">
+      <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-gray-900 mb-4 text-center">Cómo funciona</h3>
-          <p className="text-gray-600 text-center mb-16 max-w-2xl mx-auto">Un proceso estructurado en cuatro fases que garantiza la representación legítima y anónima de todos los empleados.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="text-center mb-16">
+            <p className="text-teal-600 font-semibold text-sm uppercase tracking-wide mb-3">El proceso</p>
+            <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Cuatro fases, un objetivo</h3>
+            <p className="text-gray-500 max-w-2xl mx-auto text-lg">Un proceso estructurado que garantiza la representación legítima y anónima de todos los empleados.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { n: 1, title: 'Invitaciones', text: 'Un empleado inicia el proceso de forma anónima. La plataforma envía invitaciones a sus compañeros sin revelar quién las originó. RRHH es notificado y puede sumar más contactos.' },
-              { n: 2, title: 'Propuestas', text: 'Al alcanzar el umbral de participación, los empleados envían propuestas y quejas — anónimas o firmadas — y votan las más importantes. La IA genera un informe PDF con los resultados.' },
-              { n: 3, title: 'Representantes', text: 'Los empleados pueden presentarse como candidatos. Si hay suficientes, se vota; si no, se sortea. Los designados aceptan o rechazan hasta completar el número legal.' },
-              { n: 4, title: 'Diálogo', text: 'Los representantes inician un diálogo formal con la dirección. La plataforma facilita la comunicación y ofrece guías para que las reuniones sean productivas y lleguen a acuerdos concretos.' },
-            ].map(({ n, title, text }) => (
-              <div key={n} className="bg-white p-8 rounded-xl border-2 border-teal-200">
-                <div className="w-12 h-12 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">{n}</div>
-                <h4 className="text-xl font-semibold text-gray-900 mb-3">{title}</h4>
-                <p className="text-gray-600 leading-relaxed">{text}</p>
+              { n: 1, title: 'Invitaciones', text: 'Un empleado inicia el proceso de forma anónima. La plataforma envía invitaciones sin revelar quién las originó. RRHH es notificado y puede sumar más contactos.', color: 'from-teal-500 to-teal-600', icon: '📨' },
+              { n: 2, title: 'Propuestas', text: 'Al alcanzar el umbral de participación, los empleados envían propuestas y quejas — anónimas o firmadas — y votan las más importantes.', color: 'from-emerald-500 to-emerald-600', icon: '💡' },
+              { n: 3, title: 'Representantes', text: 'Los empleados pueden presentarse como candidatos. Si hay suficientes, se vota; si no, se sortea. Los designados aceptan o rechazan hasta completar el número legal.', color: 'from-cyan-500 to-cyan-600', icon: '🗳️' },
+              { n: 4, title: 'Diálogo', text: 'Los representantes inician un diálogo formal con la dirección. La plataforma facilita la comunicación para llegar a acuerdos concretos.', color: 'from-sky-500 to-sky-600', icon: '🤝' },
+            ].map(({ n, title, text, color, icon }) => (
+              <div key={n} className="group relative bg-white rounded-2xl border border-gray-100 p-7 hover:shadow-xl hover:shadow-gray-100/50 hover:-translate-y-1 transition-all duration-300">
+                {/* Phase number badge */}
+                <div className={`w-10 h-10 bg-gradient-to-br ${color} text-white rounded-xl flex items-center justify-center font-bold text-sm mb-5 shadow-md`}>
+                  {n}
+                </div>
+                <div className="text-2xl mb-3">{icon}</div>
+                <h4 className="text-lg font-bold text-gray-900 mb-2">{title}</h4>
+                <p className="text-gray-500 text-sm leading-relaxed">{text}</p>
+                {/* Connector line (not on last) */}
+                {n < 4 && (
+                  <div className="hidden lg:block absolute top-12 -right-3 w-6 border-t-2 border-dashed border-gray-200" />
+                )}
               </div>
             ))}
           </div>
@@ -85,122 +136,117 @@ export default async function Home() {
       </section>
 
       {/* Stats */}
-      <section className="py-24 bg-white">
+      <section className="py-20 sm:py-28 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-gray-900 mb-4 text-center">En números</h3>
-          <p className="text-gray-600 text-center mb-16">Procesos reales iniciados por empleados como tú.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center bg-teal-50 rounded-2xl p-10 border border-teal-100">
-              <p className="text-7xl font-black text-teal-600 mb-3">{stats.totalProcesos}</p>
-              <p className="text-lg font-semibold text-gray-800">Procesos iniciados</p>
-              <p className="text-sm text-gray-500 mt-1">Empresas que han dado el paso</p>
-            </div>
-            <div className="text-center bg-teal-50 rounded-2xl p-10 border border-teal-100">
-              <p className="text-7xl font-black text-teal-600 mb-3">{stats.totalParticipantes}</p>
-              <p className="text-lg font-semibold text-gray-800">Empleados participantes</p>
-              <p className="text-sm text-gray-500 mt-1">Trabajadores que han ejercido su derecho</p>
-            </div>
-            <div className="text-center bg-teal-50 rounded-2xl p-10 border border-teal-100">
-              <p className="text-7xl font-black text-teal-600 mb-3">{stats.avgParticipacion}%</p>
-              <p className="text-lg font-semibold text-gray-800">Participación media</p>
-              <p className="text-sm text-gray-500 mt-1">Empleados que se unen de media por proceso</p>
-            </div>
+          <div className="text-center mb-16">
+            <p className="text-teal-600 font-semibold text-sm uppercase tracking-wide mb-3">Datos reales</p>
+            <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">En números</h3>
+            <p className="text-gray-500 text-lg">Procesos reales iniciados por empleados como tú.</p>
           </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-gray-900 mb-4 text-center">Preguntas frecuentes</h3>
-          <p className="text-gray-600 text-center mb-16">Todo lo que necesitas saber antes de empezar.</p>
-          <div className="space-y-6">
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">¿Es realmente anónimo?</h4>
-              <p className="text-gray-600 mb-3">Hay dos niveles de privacidad según el momento del proceso:</p>
-              <div className="space-y-3 mb-4">
-                <div className="bg-teal-50 border border-teal-200 rounded-lg p-3">
-                  <p className="text-sm text-teal-900"><span className="font-semibold">Fase de invitaciones:</span> Los correos se convierten en un código irreversible (hash SHA-256) y <strong>nunca se guardan en texto plano</strong>. Ni la empresa ni los administradores saben quién está en la lista.</p>
-                </div>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-sm text-blue-900"><span className="font-semibold">Al acceder al proceso:</span> Cuando un empleado introduce su correo para entrar, ese correo se guarda de forma cifrada para poder enviarle notificaciones del proceso. <strong>Nadie en la empresa puede acceder a esa información</strong> — solo se usa internamente para comunicaciones del sistema.</p>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm">En ningún caso la empresa sabe quién inició el proceso, quién votó qué, ni puede identificar a los participantes.</p>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-3">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Ejemplo real de transformación</p>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-sm font-mono">
-                  <span className="bg-white border border-gray-200 rounded px-3 py-1.5 text-gray-800 break-all">maria@empresa.com</span>
-                  <span className="text-gray-400 font-sans font-bold text-lg sm:text-xl">→</span>
-                  <span className="bg-white border border-gray-200 rounded px-3 py-1.5 text-teal-700 break-all text-xs">3f4a7c2e8b1d9a0f...</span>
-                </div>
-                <p className="text-xs text-gray-500 mt-3">El proceso de transformación es irreversible: a partir del código no es posible recuperar el email original.</p>
-              </div>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">¿Puede mi empresa tomar represalias por participar?</h4>
-              <p className="text-gray-600">El derecho a la representación colectiva está protegido por el Estatuto de los Trabajadores. La empresa no puede identificar a quién inició el proceso ni a quién ha participado, ya que el sistema no guarda ningún dato personal identificable.</p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">¿Cuántos empleados necesito para que el proceso sea válido?</h4>
-              <p className="text-gray-600">La ley exige representación a partir de 6 empleados. El número exacto de representantes varía según el tamaño de la plantilla: 1 delegado de personal entre 6 y 30 empleados, 3 entre 31 y 49, y comité de empresa a partir de 50. La plataforma calcula automáticamente el umbral necesario.</p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">¿Qué pasa si RRHH no colabora?</h4>
-              <p className="text-gray-600">No es necesaria su colaboración para iniciar el proceso. RRHH es notificado del inicio y puede facilitar el acceso a más compañeros, pero el proceso avanza igualmente si los empleados alcanzan el umbral por sus propios medios.</p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">¿Qué pasa con mis datos al finalizar el proceso?</h4>
-              <p className="text-gray-600">Toda la información vinculada al proceso se elimina de los servidores una vez completado. La plataforma cumple con el RGPD (GDPR) y aplica el principio de minimización de datos desde el diseño.</p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">¿Necesito instalar algo o crear una cuenta?</h4>
-              <p className="text-gray-600">No. Todo funciona desde el navegador. El acceso es mediante enlace mágico enviado por email — sin contraseñas, sin apps, sin registros. Recibes un enlace y entras directamente a tu espacio.</p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">¿Puedo participar aunque no haya sido yo quien inició el proceso?</h4>
-              <p className="text-gray-600">Sí. El empleado que inicia el proceso invita a sus compañeros y también puede reenviar invitaciones. Si recibes un enlace de invitación, puedes unirte con un solo clic sin necesidad de haber iniciado nada.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Privacy */}
-      <section className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-gray-900 mb-16 text-center">Privacidad y Seguridad</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: '🔐', title: 'Completamente Anónimo', text: 'Los correos se hashean y nunca se guardan en texto plano. Nadie sabe quién inició el proceso.' },
-              { icon: '⚖️', title: 'Cumplimiento GDPR', text: 'Totalmente conforme con GDPR. Los datos se encriptan y se eliminan tras completar el proceso.' },
-              { icon: '📋', title: 'Marco Legal', text: 'Respaldado por el Estatuto de los Trabajadores. Todo el proceso es documentado y verificable.' },
-            ].map(({ icon, title, text }) => (
-              <div key={title}>
-                <div className="w-12 h-12 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center text-2xl mb-4">{icon}</div>
-                <h4 className="text-xl font-semibold text-gray-900 mb-3">{title}</h4>
-                <p className="text-gray-600">{text}</p>
+              { value: stats.totalProcesos, label: 'Procesos iniciados', sub: 'Empresas que han dado el paso', gradient: 'from-teal-500 to-teal-600' },
+              { value: stats.totalParticipantes, label: 'Empleados participantes', sub: 'Trabajadores que han ejercido su derecho', gradient: 'from-emerald-500 to-emerald-600' },
+              { value: `${stats.avgParticipacion}%`, label: 'Participación media', sub: 'Empleados que se unen de media por proceso', gradient: 'from-cyan-500 to-cyan-600' },
+            ].map(({ value, label, sub, gradient }) => (
+              <div key={label} className="relative overflow-hidden bg-white rounded-2xl border border-gray-100 p-8 text-center hover:shadow-lg transition-shadow">
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradient}`} />
+                <p className="text-5xl sm:text-6xl font-black text-gray-900 mb-2">{value}</p>
+                <p className="text-base font-semibold text-gray-700">{label}</p>
+                <p className="text-sm text-gray-400 mt-1">{sub}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Privacy highlights */}
+      <section className="py-20 sm:py-28 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <p className="text-teal-600 font-semibold text-sm uppercase tracking-wide mb-3">Seguridad</p>
+            <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Privacidad por diseño</h3>
+            <p className="text-gray-500 max-w-2xl mx-auto text-lg">Tu identidad está protegida en cada paso del proceso.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { icon: '🔐', title: 'Completamente Anónimo', text: 'Los correos se transforman en códigos irreversibles (SHA-256). Nadie sabe quién inició el proceso ni quién participa.' },
+              { icon: '⚖️', title: 'Cumplimiento RGPD', text: 'Totalmente conforme con RGPD. Los datos se cifran en tránsito y reposo, y se eliminan tras completar el proceso.' },
+              { icon: '📋', title: 'Marco Legal', text: 'Respaldado por el Estatuto de los Trabajadores (arts. 62-66). Todo el proceso es documentado y verificable.' },
+            ].map(({ icon, title, text }) => (
+              <div key={title} className="bg-gray-50 rounded-2xl p-8 hover:bg-teal-50 transition-colors">
+                <div className="text-3xl mb-4">{icon}</div>
+                <h4 className="text-lg font-bold text-gray-900 mb-3">{title}</h4>
+                <p className="text-gray-500 text-sm leading-relaxed">{text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Hash example */}
+          <div className="mt-12 max-w-xl mx-auto bg-gray-50 border border-gray-100 rounded-2xl p-6">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4 text-center">Así se protege tu identidad</p>
+            <div className="flex flex-col sm:flex-row items-center gap-3 justify-center text-sm font-mono">
+              <span className="bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-800">maria@empresa.com</span>
+              <svg className="w-5 h-5 text-teal-500 rotate-90 sm:rotate-0 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+              <span className="bg-white border border-gray-200 rounded-lg px-4 py-2 text-teal-700 text-xs">3f4a7c2e8b1d9a0f...</span>
+            </div>
+            <p className="text-xs text-gray-400 mt-4 text-center">Transformación irreversible: imposible recuperar el email original.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 sm:py-28 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <p className="text-teal-600 font-semibold text-sm uppercase tracking-wide mb-3">FAQ</p>
+            <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Preguntas frecuentes</h3>
+            <p className="text-gray-500 text-lg">Todo lo que necesitas saber antes de empezar.</p>
+          </div>
+          <div className="space-y-4">
+            {[
+              { q: '¿Es realmente anónimo?', a: 'Sí. Los correos se convierten en un código irreversible (hash SHA-256) y nunca se guardan en texto plano. Al acceder al proceso, tu correo se guarda cifrado solo para enviarte notificaciones — nadie en la empresa puede acceder a él.' },
+              { q: '¿Puede mi empresa tomar represalias?', a: 'El derecho a la representación colectiva está protegido por el Estatuto de los Trabajadores. La empresa no puede identificar a quién inició el proceso ni a quién ha participado.' },
+              { q: '¿Cuántos empleados se necesitan?', a: 'La ley exige representación a partir de 6 empleados. El número de representantes varía según el tamaño de la plantilla. La plataforma calcula automáticamente el umbral necesario.' },
+              { q: '¿Qué pasa si RRHH no colabora?', a: 'No es necesaria su colaboración. RRHH es notificado y puede facilitar el acceso, pero el proceso avanza igualmente si los empleados alcanzan el umbral por sus propios medios.' },
+              { q: '¿Necesito instalar algo?', a: 'No. Todo funciona desde el navegador. El acceso es mediante enlace mágico enviado por email — sin contraseñas, sin apps, sin registros.' },
+              { q: '¿Qué pasa con mis datos al finalizar?', a: 'Toda la información vinculada al proceso se elimina de los servidores una vez completado. Cumplimos con RGPD y aplicamos el principio de minimización de datos desde el diseño.' },
+            ].map(({ q, a }) => (
+              <div key={q} className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-md transition-shadow">
+                <h4 className="text-base font-bold text-gray-900 mb-2">{q}</h4>
+                <p className="text-gray-500 text-sm leading-relaxed">{a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 sm:py-28 bg-gradient-to-br from-teal-600 to-emerald-700 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">Da el primer paso</h3>
+          <p className="text-teal-100 text-lg mb-10 max-w-xl mx-auto">Nadie sabrá que fuiste tú. Tu identidad está protegida desde el primer momento.</p>
+          <Link href="/iniciar" className="inline-flex items-center gap-2 bg-white text-teal-700 px-8 py-4 rounded-xl font-bold hover:bg-teal-50 transition-all text-lg shadow-xl hover:-translate-y-0.5">
+            Iniciar Proceso
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+          </Link>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-gray-50 py-12">
+      <footer className="border-t border-gray-100 bg-white py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
-              </div>
-              <span className="font-semibold text-gray-900">La Cabina Colectiva</span>
+            <Link href="/" className="hover:opacity-80 transition-opacity">
+              <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={220} height={32} />
+            </Link>
+            <div className="flex gap-8 text-sm text-gray-400">
+              <a href="#" className="hover:text-teal-600 transition-colors">Privacidad</a>
+              <a href="#" className="hover:text-teal-600 transition-colors">Términos</a>
+              <a href="#" className="hover:text-teal-600 transition-colors">Contacto</a>
             </div>
-            <div className="flex gap-8 text-sm text-gray-600">
-              <a href="#" className="hover:text-teal-600">Privacidad</a>
-              <a href="#" className="hover:text-teal-600">Términos</a>
-              <a href="#" className="hover:text-teal-600">Contacto</a>
-            </div>
-            <div className="text-sm text-gray-600">© 2026 La Cabina Colectiva</div>
+            <div className="text-sm text-gray-400">&copy; 2026 La Cabina Colectiva</div>
           </div>
         </div>
       </footer>
