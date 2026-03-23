@@ -1,11 +1,11 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { supabaseAdmin } from '@/lib/supabase';
 import CopyButton from './CopyButton';
 import PropuestasClient from './propuestas/PropuestasClient';
 import RepresentanteSection from './RepresentanteSection';
+import { LogoLink } from '@/components/Logo';
 
 type Fase = 1 | 2 | 3 | 4;
 
@@ -240,10 +240,7 @@ export default async function DashboardPage({
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
-          <Link href="/" className="hover:opacity-70 transition-opacity">
-            <Image src="/logo-icon.svg" alt="La Cabina Colectiva" width={36} height={36} className="sm:hidden" />
-            <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={240} height={36} className="hidden sm:block" />
-          </Link>
+          <LogoLink />
           {isAdminView && (
             <Link href="/admin" className="text-sm bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-semibold">
               ← Panel admin

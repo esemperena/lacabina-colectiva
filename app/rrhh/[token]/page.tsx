@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { supabaseAdmin } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
 import UploadEmails from './UploadEmails';
 import ContactForm from './ContactForm';
 import AnuncioForm from './AnuncioForm';
+import { LogoLink } from '@/components/Logo';
 
 interface Propuesta {
   id: string;
@@ -88,10 +88,9 @@ export default async function RRHHPage({
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-70 inline-flex mb-3">
-            <Image src="/logo-icon.svg" alt="La Cabina Colectiva" width={32} height={32} className="sm:hidden" />
-            <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={220} height={32} className="hidden sm:block" />
-          </Link>
+          <div className="inline-flex mb-3">
+            <LogoLink />
+          </div>
           <p className="text-sm text-gray-500">Panel de Recursos Humanos · {empresa.nombre}</p>
         </div>
       </header>

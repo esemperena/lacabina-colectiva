@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { supabaseAdmin } from "@/lib/supabase";
+import { LogoLink } from "@/components/Logo";
 
 async function getStats() {
   try {
@@ -33,10 +33,7 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             {/* Logo: icono en móvil, completo en escritorio */}
-            <Link href="/" className="flex items-center gap-0 hover:opacity-80 transition-opacity">
-              <Image src="/logo-icon.svg" alt="La Cabina Colectiva" width={40} height={40} className="sm:hidden" />
-              <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={280} height={40} className="hidden sm:block" />
-            </Link>
+            <LogoLink />
             <nav className="flex items-center gap-4 sm:gap-6">
               <Link href="/como-funciona" className="text-sm font-semibold text-gray-600 hover:text-teal-600 transition-colors hidden sm:block">
                 Cómo funciona
@@ -112,10 +109,10 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { n: 1, title: 'Invitaciones', text: 'Un empleado inicia el proceso de forma anónima. La plataforma envía invitaciones sin revelar quién las originó. RRHH es notificado y puede sumar más contactos.', color: 'from-teal-500 to-teal-600', icon: '📨' },
-              { n: 2, title: 'Propuestas', text: 'Al alcanzar el umbral de participación, los empleados envían propuestas y quejas — anónimas o firmadas — y votan las más importantes.', color: 'from-emerald-500 to-emerald-600', icon: '💡' },
-              { n: 3, title: 'Representantes', text: 'Los empleados pueden presentarse como candidatos. Si hay suficientes, se vota; si no, se sortea. Los designados aceptan o rechazan hasta completar el número legal.', color: 'from-cyan-500 to-cyan-600', icon: '🗳️' },
-              { n: 4, title: 'Diálogo', text: 'Los representantes inician un diálogo formal con la dirección. La plataforma facilita la comunicación para llegar a acuerdos concretos.', color: 'from-sky-500 to-sky-600', icon: '🤝' },
+              { n: 1, title: 'Invitaciones', text: 'Un empleado inicia el proceso de forma anónima. La plataforma envía invitaciones sin revelar quién las originó. RRHH es notificado y puede sumar más contactos.', color: 'from-emerald-500 to-emerald-600', icon: '📨' },
+              { n: 2, title: 'Propuestas', text: 'Al alcanzar el umbral de participación, los empleados envían propuestas y quejas — anónimas o firmadas — y votan las más importantes.', color: 'from-teal-500 to-teal-600', icon: '💡' },
+              { n: 3, title: 'Representantes', text: 'Los empleados pueden presentarse como candidatos. Si hay suficientes, se vota; si no, se sortea. Los designados aceptan o rechazan hasta completar el número legal.', color: 'from-cyan-600 to-cyan-700', icon: '🗳️' },
+              { n: 4, title: 'Diálogo', text: 'Los representantes inician un diálogo formal con la dirección. La plataforma facilita la comunicación para llegar a acuerdos concretos.', color: 'from-sky-600 to-sky-700', icon: '🤝' },
             ].map(({ n, title, text, color, icon }) => (
               <div key={n} className="group relative bg-white rounded-2xl border border-gray-100 p-7 hover:shadow-xl hover:shadow-gray-100/50 hover:-translate-y-1 transition-all duration-300">
                 {/* Phase number badge */}
@@ -145,9 +142,9 @@ export default async function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { value: stats.totalProcesos, label: 'Procesos iniciados', sub: 'Empresas que han dado el paso', gradient: 'from-teal-500 to-teal-600' },
-              { value: stats.totalParticipantes, label: 'Empleados participantes', sub: 'Trabajadores que han ejercido su derecho', gradient: 'from-emerald-500 to-emerald-600' },
-              { value: `${stats.avgParticipacion}%`, label: 'Participación media', sub: 'Empleados que se unen de media por proceso', gradient: 'from-cyan-500 to-cyan-600' },
+              { value: stats.totalProcesos, label: 'Procesos iniciados', sub: 'Empresas que han dado el paso', gradient: 'from-emerald-500 to-emerald-600' },
+              { value: stats.totalParticipantes, label: 'Empleados participantes', sub: 'Trabajadores que han ejercido su derecho', gradient: 'from-teal-500 to-teal-600' },
+              { value: `${stats.avgParticipacion}%`, label: 'Participación media', sub: 'Empleados que se unen de media por proceso', gradient: 'from-cyan-600 to-sky-600' },
             ].map(({ value, label, sub, gradient }) => (
               <div key={label} className="relative overflow-hidden bg-white rounded-2xl border border-gray-100 p-8 text-center hover:shadow-lg transition-shadow">
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradient}`} />
@@ -238,9 +235,7 @@ export default async function Home() {
       <footer className="border-t border-gray-100 bg-white py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <Link href="/" className="hover:opacity-80 transition-opacity">
-              <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={220} height={32} />
-            </Link>
+            <LogoLink />
             <div className="flex gap-8 text-sm text-gray-400">
               <a href="#" className="hover:text-teal-600 transition-colors">Privacidad</a>
               <a href="#" className="hover:text-teal-600 transition-colors">Términos</a>

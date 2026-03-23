@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useParams } from 'next/navigation';
+import { LogoLink } from '@/components/Logo';
 
 export default function InvitarPage() {
   const params = useParams();
@@ -52,10 +52,7 @@ export default function InvitarPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-70 w-fit">
-            <Image src="/logo-icon.svg" alt="La Cabina Colectiva" width={40} height={40} className="sm:hidden" />
-            <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={260} height={40} className="hidden sm:block" />
-          </Link>
+          <LogoLink />
         </div>
       </header>
 

@@ -1,4 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 48" fill="none">
-  <text x="0" y="32" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#111827" letter-spacing="-0.5">La Cabina</text>
-  <text x="178" y="32" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#0D9488" letter-spacing="-0.5">Colectiva</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 40" fill="none">
+  <text
+    y="30"
+    font-family="'Trebuchet MS', 'Segoe UI', Arial, sans-serif"
+    font-size="28"
+    font-weight="800"
+    letter-spacing="-0.8"
+  >
+    <tspan fill="#111827">La Cabina </tspan><tspan fill="#0D9488">Colectiva</tspan>
+  </text>
 </svg>

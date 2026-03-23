@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import { LogoFull } from '@/components/Logo'
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('')
@@ -42,9 +42,8 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
           {/* Header */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <Image src="/logo-icon.svg" alt="La Cabina Colectiva" width={40} height={40} className="sm:hidden" />
-            <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={260} height={40} className="hidden sm:block" />
+          <div className="flex items-center justify-center mb-8">
+            <LogoFull />
           </div>
 
           <h2 className="text-xl font-semibold text-gray-900 mb-2 text-center">

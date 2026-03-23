@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { LogoLink } from '@/components/Logo';
 
 type TipoLogin = 'empleado' | 'rrhh';
 
@@ -69,10 +69,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-white flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-12 max-w-md w-full">
-        <Link href="/" className="flex items-center gap-2 mb-8 hover:opacity-70">
-          <Image src="/logo-icon.svg" alt="La Cabina Colectiva" width={40} height={40} className="sm:hidden" />
-          <Image src="/logo-full.svg" alt="La Cabina Colectiva" width={260} height={40} className="hidden sm:block" />
-        </Link>
+        <div className="mb-8">
+          <LogoLink />
+        </div>
 
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Accede a tu proceso</h2>
         <p className="text-gray-600 mb-8">
