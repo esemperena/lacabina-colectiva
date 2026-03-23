@@ -36,7 +36,7 @@ async function intentarTransicionFase2(procesoId: string) {
 
   const empresa = proceso.empresa as unknown as { nombre: string }
   const nombreEmpresa = empresa?.nombre || 'tu empresa'
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app'
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://lacabinacolectiva.es'
 
   for (const p of participantes) {
     if (!p.email_contacto) continue

@@ -127,7 +127,7 @@ export default async function DashboardPage({
   const fase = Number(procesoData.fase) as Fase;
   const porcentaje = Math.round((procesoData.empleados_unidos / procesoData.empleados_objetivo) * 100);
   const umbralProceso = Math.ceil(procesoData.empleados_objetivo * 0.1);
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://lacabinacolectiva.es';
   const inviteLink = `${APP_URL}/invitar/${procesoId}`;
 
   // Calcular representantes necesarios según la ley (ET art. 62-66)

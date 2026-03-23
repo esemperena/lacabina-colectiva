@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Enviar email al iniciador con su enlace de acceso
-    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://lacabinacolectiva.es';
     try {
       await enviarMagicLink(iniciador_email, `${APP_URL}/api/auth/verify/${tokenIniciador}`);
     } catch (emailError) {

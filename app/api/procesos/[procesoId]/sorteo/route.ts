@@ -64,7 +64,7 @@ export async function POST(
   const seleccionados = shuffled.slice(0, faltantes);
 
   const nombreEmpresa = empresa?.nombre || 'tu empresa';
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://lacabinacolectiva.es';
 
   for (const p of seleccionados) {
     // Mark as pending with notification timestamp

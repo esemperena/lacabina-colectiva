@@ -45,7 +45,7 @@ export async function POST(
         .from('participantes')
         .update({ token_acceso: newToken, email_contacto: emailNorm })
         .eq('id', existeParticipante.id);
-      const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
+      const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://lacabinacolectiva.es';
       try {
         const { enviarMagicLink } = await import('@/lib/email');
         await enviarMagicLink(emailNorm, `${APP_URL}/api/auth/verify/${newToken}`);
