@@ -51,6 +51,10 @@ export async function POST(
   if (nuevaFase === 2) {
     updateData.fase2_inicio = new Date().toISOString();
   }
+  if (nuevaFase === 3) {
+    updateData.fase3_inicio = new Date().toISOString();
+    updateData.fase3_subfase = 'candidatura';
+  }
 
   const { error: updateError } = await supabaseAdmin
     .from('procesos')

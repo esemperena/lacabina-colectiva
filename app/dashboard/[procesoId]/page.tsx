@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase';
+import { verificarSubfaseFase3, calcularRepresentantesNecesarios } from '@/lib/fase3';
 import CopyButton from './CopyButton';
 import PropuestasClient from './propuestas/PropuestasClient';
 import RepresentanteSection from './RepresentanteSection';
@@ -36,18 +37,6 @@ function AnunciosBoard({ anuncios }: { anuncios: Anuncio[] }) {
   );
 }
 
-function calcularRepresentantesNecesarios(numEmpleados: number): number {
-  if (numEmpleados < 6) return 0;
-  if (numEmpleados <= 30) return 1;
-  if (numEmpleados <= 49) return 3;
-  if (numEmpleados <= 100) return 5;
-  if (numEmpleados <= 250) return 9;
-  if (numEmpleados <= 500) return 13;
-  if (numEmpleados <= 750) return 17;
-  if (numEmpleados <= 1000) return 21;
-  return 21 + Math.ceil((numEmpleados - 1000) / 1000) * 3;
-}
-
 export default async function DashboardPage({
   params,
 }: {
@@ -64,6 +53,7 @@ export default async function DashboardPage({
   let misPropostas = 0;
   let listoFase2 = false;
   let esVoluntario = false;
+  let declinaRepresentante = false;
   let nombreEmpleado: string | null = null;
   let estadoRepresentante: string | null = null;
 
@@ -79,13 +69,14 @@ export default async function DashboardPage({
   if (isAdminView) {
     const { data: iniciador } = await supabaseAdmin
       .from('participantes')
-      .select('id, propuestas_enviadas, listo_fase2, es_voluntario, estado_representante')
+      .select('id, propuestas_enviadas, listo_fase2, es_voluntario, declina_representante, estado_representante')
       .eq('proceso_id', procesoId).eq('es_iniciador', true).single();
     if (iniciador) {
       participanteId = iniciador.id;
       misPropostas = iniciador.propuestas_enviadas || 0;
       listoFase2 = iniciador.listo_fase2 || false;
       esVoluntario = iniciador.es_voluntario || false;
+      declinaRepresentante = iniciador.declina_representante || false;
       estadoRepresentante = iniciador.estado_representante || null;
     }
   }
@@ -94,13 +85,14 @@ export default async function DashboardPage({
     if (!sessionToken) redirect('/login');
     const { data: participante, error: participanteError } = await supabaseAdmin
       .from('participantes')
-      .select('id, proceso_id, nombre, apellidos, es_iniciador, propuestas_enviadas, listo_fase2, es_voluntario, estado_representante')
+      .select('id, proceso_id, nombre, apellidos, es_iniciador, propuestas_enviadas, listo_fase2, es_voluntario, declina_representante, estado_representante')
       .eq('token_acceso', sessionToken).single();
     if (!participante || participanteError || participante.proceso_id !== procesoId) redirect('/login');
     participanteId = participante.id;
     misPropostas = participante.propuestas_enviadas || 0;
     listoFase2 = participante.listo_fase2 || false;
     esVoluntario = participante.es_voluntario || false;
+    declinaRepresentante = participante.declina_representante || false;
     estadoRepresentante = participante.estado_representante || null;
     const nombre = participante.nombre || '';
     const apellidos = participante.apellidos || '';
@@ -127,7 +119,7 @@ export default async function DashboardPage({
     const dosSemanasMs = 14 * 24 * 60 * 60 * 1000;
     const tiempoPasado = Date.now() - new Date(procesoData.fase2_inicio).getTime();
     if (tiempoPasado > dosSemanasMs) {
-      await supabaseAdmin.from('procesos').update({ fase: '3' }).eq('id', procesoId);
+      await supabaseAdmin.from('procesos').update({ fase: '3', fase3_inicio: new Date().toISOString(), fase3_subfase: 'candidatura' }).eq('id', procesoId);
       procesoData.fase = '3';
     }
   }
@@ -149,16 +141,25 @@ export default async function DashboardPage({
   const representantesNecesarios = calcularRepresentantesNecesarios(totalEmpleados);
   let voluntariosActuales = 0;
   let representantesConfirmados = 0;
+  let totalParticipantes = 0;
+  let hanDecididoCount = 0;
+  let subfase = 'candidatura';
+  let diasRestantes = 14;
   let candidatos: Array<{ id: string; nombre: string | null; votos_count: number; has_voted: boolean }> = [];
+
   if (fase === 3) {
+    // Verificar y avanzar subfase automáticamente
+    subfase = await verificarSubfaseFase3(procesoId);
+
+    // Contar voluntarios
     try {
-      const { count, error: volError } = await supabaseAdmin
+      const { count } = await supabaseAdmin
         .from('participantes').select('id', { count: 'exact', head: true })
         .eq('proceso_id', procesoId).eq('es_voluntario', true);
-      if (!volError) voluntariosActuales = count || 0;
-    } catch { /* columna puede no existir aún */ }
+      voluntariosActuales = count || 0;
+    } catch { /* */ }
 
-    // Contar representantes ya confirmados
+    // Contar representantes confirmados
     try {
       const { count: confCount } = await supabaseAdmin
         .from('participantes').select('id', { count: 'exact', head: true })
@@ -166,40 +167,61 @@ export default async function DashboardPage({
       representantesConfirmados = confCount || 0;
     } catch { /* */ }
 
-    // Si hay votación (más voluntarios que necesarios), obtener candidatos con votos
-    if (voluntariosActuales > representantesNecesarios) {
+    // Total participantes y cuántos han decidido
+    try {
+      const { count: totalCount } = await supabaseAdmin
+        .from('participantes').select('id', { count: 'exact', head: true })
+        .eq('proceso_id', procesoId);
+      totalParticipantes = totalCount || 0;
+
+      const { count: decididos } = await supabaseAdmin
+        .from('participantes').select('id', { count: 'exact', head: true })
+        .eq('proceso_id', procesoId)
+        .or('es_voluntario.eq.true,declina_representante.eq.true');
+      hanDecididoCount = decididos || 0;
+    } catch { /* */ }
+
+    // Días restantes de candidatura
+    const { data: procFase3 } = await supabaseAdmin
+      .from('procesos').select('fase3_inicio').eq('id', procesoId).single();
+    if (procFase3?.fase3_inicio) {
+      const inicio = new Date(procFase3.fase3_inicio);
+      const diasPasados = (Date.now() - inicio.getTime()) / (1000 * 60 * 60 * 24);
+      diasRestantes = Math.max(0, Math.ceil(14 - diasPasados));
+    }
+
+    // Si votación, obtener candidatos con votos
+    if (subfase === 'votacion') {
       try {
         const { data: voluntarios } = await supabaseAdmin
-          .from('participantes')
-          .select('id, nombre')
-          .eq('proceso_id', procesoId)
-          .eq('es_voluntario', true);
+          .from('participantes').select('id, nombre')
+          .eq('proceso_id', procesoId).eq('es_voluntario', true);
 
         if (voluntarios) {
-          // Contar votos de cada candidato
           let votedByMe = new Set<string>();
           if (participanteId) {
             const { data: misVotos } = await supabaseAdmin
-              .from('votos_representantes')
-              .select('candidato_id')
+              .from('votos_representantes').select('candidato_id')
               .eq('votante_id', participanteId);
             if (misVotos) votedByMe = new Set(misVotos.map(v => v.candidato_id));
           }
 
           candidatos = await Promise.all(voluntarios.map(async (v) => {
             const { count } = await supabaseAdmin
-              .from('votos_representantes')
-              .select('id', { count: 'exact', head: true })
+              .from('votos_representantes').select('id', { count: 'exact', head: true })
               .eq('candidato_id', v.id);
             return {
-              id: v.id,
-              nombre: v.nombre,
-              votos_count: count || 0,
-              has_voted: votedByMe.has(v.id),
+              id: v.id, nombre: v.nombre,
+              votos_count: count || 0, has_voted: votedByMe.has(v.id),
             };
           }));
         }
       } catch { /* */ }
+    }
+
+    // Si verificarSubfaseFase3 devolvió 'completada', la fase ya es 4
+    if (subfase === 'completada') {
+      // Reload — the function already updated the DB
     }
   }
 
@@ -370,12 +392,17 @@ export default async function DashboardPage({
             <RepresentanteSection
               procesoId={procesoId}
               participanteId={participanteId}
+              subfase={subfase}
               esVoluntario={esVoluntario}
+              declinaRepresentante={declinaRepresentante}
               voluntariosActuales={voluntariosActuales}
               representantesNecesarios={representantesNecesarios}
+              totalParticipantes={totalParticipantes}
+              hanDecidido={hanDecididoCount}
               estadoRepresentante={estadoRepresentante}
               candidatos={candidatos}
               representantesConfirmados={representantesConfirmados}
+              diasRestantes={diasRestantes}
             />
           </div>
         )}

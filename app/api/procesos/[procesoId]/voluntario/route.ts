@@ -7,16 +7,28 @@ export async function POST(
 ) {
   const { procesoId } = await params;
   const body = await request.json();
-  const { participante_id } = body;
+  const { participante_id, accion } = body;
+  // accion: 'voluntario' | 'revertir' | 'declinar'
 
-  if (!participante_id) {
-    return NextResponse.json({ error: 'Falta participante_id' }, { status: 400 });
+  if (!participante_id || !accion) {
+    return NextResponse.json({ error: 'Faltan campos (participante_id, accion)' }, { status: 400 });
   }
 
-  // Verify participante belongs to this proceso
+  // Verificar que el proceso está en Fase 3 subfase candidatura
+  const { data: proc } = await supabaseAdmin
+    .from('procesos')
+    .select('fase, fase3_subfase')
+    .eq('id', procesoId)
+    .single();
+
+  if (!proc || proc.fase !== '3' || (proc.fase3_subfase && proc.fase3_subfase !== 'candidatura')) {
+    return NextResponse.json({ error: 'El periodo de candidaturas ha terminado' }, { status: 400 });
+  }
+
+  // Verificar participante pertenece al proceso
   const { data: participante, error: pError } = await supabaseAdmin
     .from('participantes')
-    .select('id, proceso_id, es_voluntario')
+    .select('id, proceso_id, es_voluntario, declina_representante')
     .eq('id', participante_id)
     .eq('proceso_id', procesoId)
     .single();
@@ -25,18 +37,26 @@ export async function POST(
     return NextResponse.json({ error: 'Participante no encontrado' }, { status: 404 });
   }
 
-  if (participante.es_voluntario) {
-    return NextResponse.json({ ok: true, ya_registrado: true });
+  if (accion === 'voluntario') {
+    await supabaseAdmin.from('participantes')
+      .update({ es_voluntario: true, declina_representante: false })
+      .eq('id', participante_id);
+    return NextResponse.json({ ok: true, es_voluntario: true, declina_representante: false });
   }
 
-  const { error: updateError } = await supabaseAdmin
-    .from('participantes')
-    .update({ es_voluntario: true })
-    .eq('id', participante_id);
-
-  if (updateError) {
-    return NextResponse.json({ error: 'Error al registrar' }, { status: 500 });
+  if (accion === 'revertir') {
+    await supabaseAdmin.from('participantes')
+      .update({ es_voluntario: false, declina_representante: false })
+      .eq('id', participante_id);
+    return NextResponse.json({ ok: true, es_voluntario: false, declina_representante: false });
   }
 
-  return NextResponse.json({ ok: true });
+  if (accion === 'declinar') {
+    await supabaseAdmin.from('participantes')
+      .update({ es_voluntario: false, declina_representante: true })
+      .eq('id', participante_id);
+    return NextResponse.json({ ok: true, es_voluntario: false, declina_representante: true });
+  }
+
+  return NextResponse.json({ error: 'Acción no válida' }, { status: 400 });
 }

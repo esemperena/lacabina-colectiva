@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { enviarEmailSorteoRepresentante } from '@/lib/email';
-
-function calcularRepresentantesNecesarios(numEmpleados: number): number {
-  if (numEmpleados < 6) return 0;
-  if (numEmpleados <= 30) return 1;
-  if (numEmpleados <= 49) return 3;
-  if (numEmpleados <= 100) return 5;
-  if (numEmpleados <= 250) return 9;
-  if (numEmpleados <= 500) return 13;
-  if (numEmpleados <= 750) return 17;
-  if (numEmpleados <= 1000) return 21;
-  return 21 + Math.ceil((numEmpleados - 1000) / 1000) * 3;
-}
+import { calcularRepresentantesNecesarios } from '@/lib/fase3';
 
 export async function POST(
   request: NextRequest,
@@ -78,10 +67,10 @@ export async function POST(
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
 
   for (const p of seleccionados) {
-    // Mark as pending
+    // Mark as pending with notification timestamp
     await supabaseAdmin
       .from('participantes')
-      .update({ estado_representante: 'pendiente' })
+      .update({ estado_representante: 'pendiente', sorteo_notificado_at: new Date().toISOString() })
       .eq('id', p.id);
 
     // Send email
@@ -94,6 +83,11 @@ export async function POST(
       }
     }
   }
+
+  // Avanzar subfase a confirmación
+  await supabaseAdmin.from('procesos')
+    .update({ fase3_subfase: 'confirmacion' })
+    .eq('id', procesoId);
 
   return NextResponse.json({
     ok: true,
