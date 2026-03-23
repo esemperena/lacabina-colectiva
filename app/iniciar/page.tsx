@@ -174,26 +174,38 @@ export default function IniciarPage() {
       </header>
 
       {/* Progress Steps */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-200 bg-gray-50">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between">
-            {[1, 2, 3].map((s) => (
-              <div key={s} className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                    s <= step
-                      ? 'bg-teal-600 text-white'
-                      : 'bg-gray-200 text-gray-600'
-                  }`}
-                >
-                  {s}
-                </div>
-                {s < 3 && (
+          <div className="flex items-start justify-between">
+            {[
+              { num: 1, label: 'Tu empresa', desc: 'Datos básicos y RRHH' },
+              { num: 2, label: 'Tu acceso', desc: 'Correo confidencial' },
+              { num: 3, label: 'Tus compañeros', desc: 'Invitar por email' },
+            ].map(({ num, label, desc }) => (
+              <div key={num} className="flex items-start flex-1">
+                <div className="flex flex-col items-center flex-1">
                   <div
-                    className={`w-20 h-1 ${
-                      s < step ? 'bg-teal-600' : 'bg-gray-200'
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${
+                      num < step
+                        ? 'bg-teal-600 text-white'
+                        : num === step
+                        ? 'bg-teal-600 text-white ring-4 ring-teal-100'
+                        : 'bg-gray-200 text-gray-500'
                     }`}
-                  />
+                  >
+                    {num < step ? '✓' : num}
+                  </div>
+                  <p className={`mt-2 text-xs font-semibold text-center ${num <= step ? 'text-teal-700' : 'text-gray-400'}`}>
+                    {label}
+                  </p>
+                  <p className={`text-xs text-center ${num <= step ? 'text-gray-500' : 'text-gray-300'}`}>
+                    {desc}
+                  </p>
+                </div>
+                {num < 3 && (
+                  <div className="flex-1 flex items-center pt-5">
+                    <div className={`h-0.5 w-full mx-2 transition-colors ${num < step ? 'bg-teal-500' : 'bg-gray-200'}`} />
+                  </div>
                 )}
               </div>
             ))}

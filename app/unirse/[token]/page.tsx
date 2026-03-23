@@ -2,19 +2,17 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { LogoLink } from '@/components/Logo';
 
 interface FormData {
-  nombre?: string;
-  edad?: string;
-  sexo?: string;
-  anonimidad_confirmada: boolean;
+  nombre: string;
+  apellidos: string;
+  sexo: string;
 }
 
 export default function UnirsePagePage() {
   const params = useParams();
-  const router = useRouter();
   const token = params.token as string;
 
   const [loading, setLoading] = useState(false);
@@ -23,29 +21,19 @@ export default function UnirsePagePage() {
   const [procesoId, setProcesoId] = useState<string>('');
   const [formData, setFormData] = useState<FormData>({
     nombre: '',
-    edad: '',
+    apellidos: '',
     sexo: '',
-    anonimidad_confirmada: false,
   });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, type, value, checked } = e.target as HTMLInputElement;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.anonimidad_confirmada) {
-      setError('Debes confirmar que entiendes que el proceso es anónimo');
-      return;
-    }
-
     setLoading(true);
     setError('');
 
@@ -56,7 +44,7 @@ export default function UnirsePagePage() {
         body: JSON.stringify({
           token,
           nombre: formData.nombre || undefined,
-          edad: formData.edad ? parseInt(formData.edad) : undefined,
+          apellidos: formData.apellidos || undefined,
           sexo: formData.sexo || undefined,
         }),
       });
@@ -79,35 +67,32 @@ export default function UnirsePagePage() {
   if (success) {
     return (
       <div className="min-h-screen bg-white">
-        {/* Header */}
         <header className="border-b border-gray-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <LogoLink />
           </div>
         </header>
-
-        {/* Success Message */}
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="bg-green-50 border-2 border-green-200 rounded-xl p-8 text-center">
             <div className="text-5xl mb-6">✓</div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">¡Te has unido exitosamente!</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">¡Ya eres parte del proceso!</h2>
             <p className="text-lg text-gray-600 mb-8">
-              Ahora eres parte del proceso de representación colectiva.
+              Tu participación es confidencial. La empresa no sabrá que te has unido.
             </p>
             <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8 text-left">
-              <h3 className="font-semibold text-gray-900 mb-4">Qué sigue:</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Qué puedes hacer ahora:</h3>
               <ul className="space-y-3 text-gray-700">
                 <li className="flex gap-3">
                   <span className="font-bold text-teal-600">1.</span>
-                  <span>Accede al dashboard para ver propuestas de otros empleados</span>
+                  <span>Ver las propuestas de otros empleados y votar las que te importan</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-teal-600">2.</span>
-                  <span>Propone tus ideas, quejas o consultas</span>
+                  <span>Añadir tus propias ideas, quejas o consultas</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-teal-600">3.</span>
-                  <span>Vota las propuestas que te importan</span>
+                  <span>Seguir el proceso hasta que se elijan los representantes</span>
                 </li>
               </ul>
             </div>
@@ -115,7 +100,7 @@ export default function UnirsePagePage() {
               href={`/dashboard/${procesoId}`}
               className="inline-block bg-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
             >
-              Ir al Dashboard
+              Ir al proceso
             </Link>
           </div>
         </div>
@@ -125,35 +110,32 @@ export default function UnirsePagePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
       <header className="border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <LogoLink />
         </div>
       </header>
 
-      {/* Form Container */}
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-xl border border-gray-200 p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Estás a punto de unirte al proceso
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">
+            Únete al proceso
           </h2>
-          <p className="text-gray-600 mb-8">
-            Tus datos son opcionales. Solo mantén anónimo lo que quieras.
+          <p className="text-gray-500 text-sm mb-6">
+            Tus datos son confidenciales. La empresa no sabrá que te has unido al proceso si no quieres.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Anonymous Notice */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-800">
-                <span className="font-semibold">Privacidad:</span> Este proceso es completamente anónimo. Nadie sabrá quién eres a menos que lo reveles voluntariamente.
-              </p>
-            </div>
+          {/* Confidentiality notice */}
+          <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 mb-6">
+            <p className="text-sm text-teal-800">
+              🔒 <span className="font-semibold">Tus datos son confidenciales</span> y solo se usan para mejorar el análisis del proceso. No se compartirán con tu empresa sin tu consentimiento.
+            </p>
+          </div>
 
-            {/* Name (Optional) */}
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Nombre <span className="text-gray-500 font-normal">(opcional)</span>
+                Nombre
               </label>
               <input
                 type="text"
@@ -161,31 +143,27 @@ export default function UnirsePagePage() {
                 value={formData.nombre}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
-                placeholder="Tu nombre (si lo deseas compartir)"
+                placeholder="Tu nombre"
               />
             </div>
 
-            {/* Age (Optional) */}
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Edad <span className="text-gray-500 font-normal">(opcional)</span>
+                Apellidos
               </label>
               <input
-                type="number"
-                name="edad"
-                value={formData.edad}
+                type="text"
+                name="apellidos"
+                value={formData.apellidos}
                 onChange={handleInputChange}
-                min="18"
-                max="120"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-gray-900"
-                placeholder="Tu edad (si lo deseas)"
+                placeholder="Tus apellidos"
               />
             </div>
 
-            {/* Sex (Optional) */}
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Género <span className="text-gray-500 font-normal">(opcional)</span>
+                Género
               </label>
               <select
                 name="sexo"
@@ -200,35 +178,18 @@ export default function UnirsePagePage() {
               </select>
             </div>
 
-            {/* Anonymity Confirmation */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="anonimidad_confirmada"
-                  checked={formData.anonimidad_confirmada}
-                  onChange={handleInputChange}
-                  className="mt-1 w-5 h-5 text-teal-600 rounded border-gray-300 focus:ring-2 focus:ring-teal-500"
-                />
-                <span className="text-sm text-green-800">
-                  Confirmo que entiendo que este proceso es <span className="font-semibold">completamente anónimo</span>. Mi participación será privada y segura.
-                </span>
-              </label>
-            </div>
-
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
               className="w-full px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50"
             >
-              {loading ? 'Uniéndote...' : 'Unirme al Proceso'}
+              {loading ? 'Uniéndome...' : 'Unirme al proceso'}
             </button>
           </form>
         </div>
