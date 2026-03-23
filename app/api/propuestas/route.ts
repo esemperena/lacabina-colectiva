@@ -51,6 +51,18 @@ export async function POST(request: NextRequest) {
       participante_id,
     } = body;
 
+    // Verificar que el proceso esté en Fase 2
+    if (proceso_id) {
+      const { data: proc } = await supabaseAdmin
+        .from('procesos').select('fase').eq('id', proceso_id).single();
+      if (proc && proc.fase !== '2') {
+        return NextResponse.json(
+          { error: 'Solo se pueden enviar propuestas en la Fase 2' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Validate required fields
     if (!proceso_id || !titulo || !descripcion || !tipo) {
       return NextResponse.json(

@@ -64,6 +64,7 @@ export default async function DashboardPage({
   let listoFase2 = false;
   let esVoluntario = false;
   let nombreEmpleado: string | null = null;
+  let estadoRepresentante: string | null = null;
 
   if (adminToken) {
     const { data: tokenData } = await supabaseAdmin
@@ -77,13 +78,14 @@ export default async function DashboardPage({
   if (isAdminView) {
     const { data: iniciador } = await supabaseAdmin
       .from('participantes')
-      .select('id, propuestas_enviadas, listo_fase2, es_voluntario')
+      .select('id, propuestas_enviadas, listo_fase2, es_voluntario, estado_representante')
       .eq('proceso_id', procesoId).eq('es_iniciador', true).single();
     if (iniciador) {
       participanteId = iniciador.id;
       misPropostas = iniciador.propuestas_enviadas || 0;
       listoFase2 = iniciador.listo_fase2 || false;
       esVoluntario = iniciador.es_voluntario || false;
+      estadoRepresentante = iniciador.estado_representante || null;
     }
   }
 
@@ -91,13 +93,14 @@ export default async function DashboardPage({
     if (!sessionToken) redirect('/login');
     const { data: participante, error: participanteError } = await supabaseAdmin
       .from('participantes')
-      .select('id, proceso_id, nombre, apellidos, es_iniciador, propuestas_enviadas, listo_fase2, es_voluntario')
+      .select('id, proceso_id, nombre, apellidos, es_iniciador, propuestas_enviadas, listo_fase2, es_voluntario, estado_representante')
       .eq('token_acceso', sessionToken).single();
     if (!participante || participanteError || participante.proceso_id !== procesoId) redirect('/login');
     participanteId = participante.id;
     misPropostas = participante.propuestas_enviadas || 0;
     listoFase2 = participante.listo_fase2 || false;
     esVoluntario = participante.es_voluntario || false;
+    estadoRepresentante = participante.estado_representante || null;
     const nombre = participante.nombre || '';
     const apellidos = participante.apellidos || '';
     nombreEmpleado = [nombre, apellidos].filter(Boolean).join(' ') || null;
@@ -116,7 +119,18 @@ export default async function DashboardPage({
     empresa: { id: string; nombre: string; sector: string; num_empleados: number; rrhh_email: string; };
   }
 
-  const procesoData = proceso as ProcesoData;
+  const procesoData = proceso as unknown as ProcesoData;
+
+  // Auto-avance Fase 2→3: si pasaron 14 días desde fase2_inicio
+  if (procesoData.fase === '2' && procesoData.fase2_inicio) {
+    const dosSemanasMs = 14 * 24 * 60 * 60 * 1000;
+    const tiempoPasado = Date.now() - new Date(procesoData.fase2_inicio).getTime();
+    if (tiempoPasado > dosSemanasMs) {
+      await supabaseAdmin.from('procesos').update({ fase: '3' }).eq('id', procesoId);
+      procesoData.fase = '3';
+    }
+  }
+
   const fase = Number(procesoData.fase) as Fase;
   const porcentaje = Math.round((procesoData.empleados_unidos / procesoData.empleados_objetivo) * 100);
   const umbralProceso = Math.ceil(procesoData.empleados_objetivo * 0.1);
@@ -133,6 +147,8 @@ export default async function DashboardPage({
   }
   const representantesNecesarios = calcularRepresentantesNecesarios(totalEmpleados);
   let voluntariosActuales = 0;
+  let representantesConfirmados = 0;
+  let candidatos: Array<{ id: string; nombre: string | null; votos_count: number; has_voted: boolean }> = [];
   if (fase === 3) {
     try {
       const { count, error: volError } = await supabaseAdmin
@@ -140,6 +156,50 @@ export default async function DashboardPage({
         .eq('proceso_id', procesoId).eq('es_voluntario', true);
       if (!volError) voluntariosActuales = count || 0;
     } catch { /* columna puede no existir aún */ }
+
+    // Contar representantes ya confirmados
+    try {
+      const { count: confCount } = await supabaseAdmin
+        .from('participantes').select('id', { count: 'exact', head: true })
+        .eq('proceso_id', procesoId).eq('es_representante', true).eq('estado_representante', 'aceptado');
+      representantesConfirmados = confCount || 0;
+    } catch { /* */ }
+
+    // Si hay votación (más voluntarios que necesarios), obtener candidatos con votos
+    if (voluntariosActuales > representantesNecesarios) {
+      try {
+        const { data: voluntarios } = await supabaseAdmin
+          .from('participantes')
+          .select('id, nombre')
+          .eq('proceso_id', procesoId)
+          .eq('es_voluntario', true);
+
+        if (voluntarios) {
+          // Contar votos de cada candidato
+          let votedByMe = new Set<string>();
+          if (participanteId) {
+            const { data: misVotos } = await supabaseAdmin
+              .from('votos_representantes')
+              .select('candidato_id')
+              .eq('votante_id', participanteId);
+            if (misVotos) votedByMe = new Set(misVotos.map(v => v.candidato_id));
+          }
+
+          candidatos = await Promise.all(voluntarios.map(async (v) => {
+            const { count } = await supabaseAdmin
+              .from('votos_representantes')
+              .select('id', { count: 'exact', head: true })
+              .eq('candidato_id', v.id);
+            return {
+              id: v.id,
+              nombre: v.nombre,
+              votos_count: count || 0,
+              has_voted: votedByMe.has(v.id),
+            };
+          }));
+        }
+      } catch { /* */ }
+    }
   }
 
   const { data: anunciosData } = await supabaseAdmin
@@ -317,18 +377,22 @@ export default async function DashboardPage({
               esVoluntario={esVoluntario}
               voluntariosActuales={voluntariosActuales}
               representantesNecesarios={representantesNecesarios}
+              estadoRepresentante={estadoRepresentante}
+              candidatos={candidatos}
+              representantesConfirmados={representantesConfirmados}
             />
           </div>
         )}
 
-        {/* Fase 4 active section */}
+        {/* Fase 4: proceso cerrado, modo consulta */}
         {fase === 4 && (
-          <div className="bg-purple-50 border-2 border-purple-300 rounded-xl p-6">
+          <div className="bg-green-50 border-2 border-green-300 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-2">
-              <span className="bg-purple-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">Fase activa</span>
-              <h3 className="text-lg font-bold text-purple-900">Fase de Diálogo</h3>
+              <span className="bg-green-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">Proceso completado</span>
+              <h3 className="text-lg font-bold text-green-900">Fase de Diálogo</h3>
             </div>
-            <p className="text-sm text-purple-700">Los representantes elegidos están dialogando con la dirección de la empresa. Aquí aparecerán los acuerdos y resultados alcanzados.</p>
+            <p className="text-sm text-green-700 mb-3">Los representantes elegidos están dialogando con la dirección de la empresa para trasladar las propuestas más votadas.</p>
+            <p className="text-xs text-green-600">Este proceso está ahora en modo consulta. Puedes revisar las propuestas pero ya no se pueden enviar nuevas ni votar.</p>
           </div>
         )}
 

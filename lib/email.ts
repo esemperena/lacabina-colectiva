@@ -217,3 +217,32 @@ export async function enviarEmailInicioFase3(
     `,
   })
 }
+
+export async function enviarEmailSorteoRepresentante(
+  email: string,
+  tokenAcceso: string,
+  enlaceAcceso: string,
+  nombreEmpresa: string
+) {
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `Has sido seleccionado por sorteo como representante — ${nombreEmpresa}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
+        <h2 style="color: #1f2937;">Has sido seleccionado como representante</h2>
+        <p>En el proceso de representación colectiva de <strong>${nombreEmpresa}</strong>, no se presentaron suficientes voluntarios, por lo que se ha realizado un <strong>sorteo aleatorio</strong> entre todos los participantes.</p>
+        <div style="background: #faf5ff; border-left: 4px solid #9333ea; padding: 16px; margin: 16px 0; border-radius: 4px;">
+          <p style="margin: 0; color: #581c87;"><strong>Has sido elegido/a para representar a tus compañeros.</strong></p>
+          <p style="margin: 8px 0 0; color: #6b21a8;">Entra en tu dashboard para aceptar o rechazar el cargo. Si rechazas, se realizará un nuevo sorteo.</p>
+        </div>
+        <a href="${enlaceAcceso}" style="display: inline-block; padding: 12px 24px; background-color: #9333ea; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
+          Ver mi dashboard →
+        </a>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+        <p style="color: #999; font-size: 12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+      </div>
+    `,
+  })
+}

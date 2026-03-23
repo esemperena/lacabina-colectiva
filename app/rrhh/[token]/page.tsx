@@ -188,11 +188,18 @@ export default async function RRHHPage({
         </div>
 
         {/* Proposals list */}
-        {listaPropuestas.length > 0 && (
+        {(fase >= 2 && listaPropuestas.length > 0) && (
           <div>
             <h3 className="text-lg font-bold text-gray-900 mb-4">
               Propuestas <span className="text-gray-400 font-normal text-base">({listaPropuestas.length})</span>
             </h3>
+            {fase === 2 && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+                <p className="text-sm text-amber-800">
+                  <span className="font-semibold">⏳ Fase de propuestas en curso.</span> Los empleados todavía están enviando y votando ideas. Las propuestas que ves aquí pueden cambiar de orden o aumentar en número hasta que finalice esta fase.
+                </p>
+              </div>
+            )}
             <div className="space-y-3">
               {listaPropuestas.map(propuesta => {
                 const badge = getTipoBadge(propuesta.tipo);

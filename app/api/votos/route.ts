@@ -7,6 +7,19 @@ export async function POST(request: NextRequest) {
 
     const { propuesta_id, participante_id } = body;
 
+    // Verificar que el proceso esté en Fase 2
+    if (propuesta_id) {
+      const { data: prop } = await supabaseAdmin
+        .from('propuestas').select('proceso_id').eq('id', propuesta_id).single();
+      if (prop) {
+        const { data: proc } = await supabaseAdmin
+          .from('procesos').select('fase').eq('id', prop.proceso_id).single();
+        if (proc && proc.fase !== '2') {
+          return NextResponse.json({ error: 'Solo se puede votar en la Fase 2' }, { status: 400 });
+        }
+      }
+    }
+
     // Validate required fields
     if (!propuesta_id || !participante_id) {
       return NextResponse.json(
