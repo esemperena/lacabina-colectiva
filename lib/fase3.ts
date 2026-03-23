@@ -1,7 +1,11 @@
 import { supabaseAdmin } from '@/lib/supabase';
 
+/**
+ * Calcula representantes necesarios según la ley española (ET art. 62-66).
+ * Mínimo 1 representante siempre (para que la app funcione incluso en pruebas).
+ */
 export function calcularRepresentantesNecesarios(numEmpleados: number): number {
-  if (numEmpleados < 6) return 0;
+  if (numEmpleados <= 0) return 1; // Mínimo 1 para pruebas
   if (numEmpleados <= 30) return 1;
   if (numEmpleados <= 49) return 3;
   if (numEmpleados <= 100) return 5;
