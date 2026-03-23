@@ -81,9 +81,9 @@ export default function IniciarPage() {
     try {
       // Parse colleagues emails
       const colegas = formData.colegas_emails
-        .split(/[,\n]/)
+        .split(/[,;\s\n]+/)
         .map(email => email.trim())
-        .filter(email => email.length > 0);
+        .filter(email => email.includes('@') && email.length > 0);
 
       const response = await fetch('/api/procesos', {
         method: 'POST',
@@ -349,28 +349,40 @@ export default function IniciarPage() {
           {step === 3 && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Invita a tus compañeros</h2>
-              <p className="text-gray-600 mb-8">
-                Añade los correos de tus compañeros. Cuantos más se unan, más representativo será el proceso. Sepáralos por coma o por línea.
+              <p className="text-gray-600 mb-6">
+                Pega aquí todos los emails a la vez. Puedes copiarlos de Outlook, Gmail, Excel o cualquier lista.
               </p>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-800 font-semibold mb-1">💡 Cómo pegar emails fácilmente</p>
+                  <p className="text-sm text-blue-700">Puedes separarlos por <strong>comas</strong>, <strong>punto y coma</strong>, <strong>espacios</strong> o <strong>saltos de línea</strong>. Pega directamente desde tu gestor de correo o Excel y lo detectamos automáticamente.</p>
+                </div>
+
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Correos de los colegas
-                  </label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-semibold text-gray-900">
+                      Correos de los compañeros
+                    </label>
+                    {formData.colegas_emails.trim() && (
+                      <span className="text-sm font-semibold text-teal-600">
+                        {formData.colegas_emails.split(/[,;\s\n]+/).filter(e => e.includes('@')).length} emails detectados
+                      </span>
+                    )}
+                  </div>
                   <textarea
                     name="colegas_emails"
                     value={formData.colegas_emails}
                     onChange={handleInputChange}
                     rows={8}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 font-mono text-sm text-gray-900"
-                    placeholder="colega1@empresa.com&#10;colega2@empresa.com&#10;colega3@empresa.com"
+                    placeholder={`colega1@empresa.com, colega2@empresa.com\no bien uno por línea:\ncolega3@empresa.com\ncolega4@empresa.com`}
                   />
                 </div>
 
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <p className="text-sm text-green-800">
-                    <span className="font-semibold">Las invitaciones no revelan quién inició el proceso.</span> Cada compañero recibirá un enlace único y anónimo.
+                    <span className="font-semibold">Las invitaciones no revelan quién inició el proceso.</span> Cada compañero recibirá un enlace único y confidencial.
                   </p>
                 </div>
 

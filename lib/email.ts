@@ -10,22 +10,48 @@ export async function enviarInvitacionEmpleado(
   nombreEmpresa: string
 ) {
   const enlace = `${APP_URL}/unirse/${tokenAcceso}`
+  const enlaceComoFunciona = `${APP_URL}/como-funciona`
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
     subject: `Tu empresa está iniciando un proceso de representación colectiva`,
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
-        <p>Hola,</p>
-        <p>Un compañero/a de <strong>${nombreEmpresa}</strong> ha iniciado un proceso para crear un comité de representación interno.</p>
-        <p>Puedes unirte de forma completamente <strong>anónima</strong>. La empresa no sabrá quién se ha unido.</p>
-        <a href="${enlace}" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
-          Unirme al proceso
-        </a>
-        <p style="color: #666; font-size: 14px;">Este enlace es personal e intransferible.</p>
-        <hr style="border: none; border-top: 1px solid #eee;" />
-        <p style="color: #999; font-size: 12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1f2937;">
+        <div style="background: #0d9488; padding: 24px 32px; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 22px;">La Cabina Colectiva</h1>
+        </div>
+        <div style="padding: 32px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+          <h2 style="color: #111827; margin-top: 0;">Un compañero/a te invita a participar</h2>
+          <p style="color: #4b5563;">Hola,</p>
+          <p style="color: #4b5563;">Un compañero/a de <strong>${nombreEmpresa}</strong> ha iniciado un proceso para elegir representantes de los empleados a través de La Cabina Colectiva.</p>
+
+          <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 14px 18px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0 0 6px; color: #134e4a; font-weight: bold;">¿Qué pasa si hago clic?</p>
+            <ol style="margin: 0; padding-left: 18px; color: #134e4a; font-size: 14px; line-height: 1.8;">
+              <li>Accedes a un formulario breve donde puedes añadir tu nombre (opcional).</li>
+              <li>Te unes al proceso de forma confidencial — la empresa no sabrá que participas si no quieres.</li>
+              <li>Podrás enviar propuestas, votar y, si quieres, presentarte como representante.</li>
+            </ol>
+          </div>
+
+          <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 18px; margin: 16px 0;">
+            <p style="margin: 0; color: #6b7280; font-size: 13px;">🔒 <strong>Tu participación es confidencial.</strong> La empresa solo verá el número total de participantes, nunca quiénes son.</p>
+          </div>
+
+          <div style="margin: 24px 0;">
+            <a href="${enlace}" style="display: inline-block; padding: 14px 28px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px; margin-right: 12px;">
+              Unirme al proceso →
+            </a>
+            <a href="${enlaceComoFunciona}" style="display: inline-block; padding: 14px 28px; background-color: #f3f4f6; color: #374151; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px; border: 1px solid #d1d5db;">
+              Cómo funciona
+            </a>
+          </div>
+
+          <p style="color: #9ca3af; font-size: 12px;">Este enlace es personal e intransferible. Si no quieres participar, simplemente ignora este email.</p>
+
+          <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 24px 0;" />
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+        </div>
       </div>
     `,
   })
@@ -37,25 +63,43 @@ export async function enviarNotificacionRRHH(
   nombreEmpresa: string
 ) {
   const enlace = `${APP_URL}/rrhh/${tokenRRHH}`
+  const enlaceComoFunciona = `${APP_URL}/como-funciona`
   await resend.emails.send({
     from: FROM_EMAIL,
     to: emailRRHH,
     subject: `Se ha iniciado un proceso de representación colectiva en ${nombreEmpresa}`,
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
-        <p>Estimado/a equipo de Recursos Humanos de <strong>${nombreEmpresa}</strong>,</p>
-        <p>Un empleado ha iniciado un proceso para crear una representación colectiva en vuestra empresa.</p>
-        <p><strong>¿Qué es La Cabina Colectiva?</strong></p>
-        <p>Es una plataforma que facilita la creación de comités de empresa o delegados de personal de forma ordenada, transparente y respetuosa con la privacidad de los empleados.</p>
-        <p><strong>¿Qué pedimos a RRHH?</strong></p>
-        <p>Vuestra colaboración compartiendo los emails corporativos de todos los empleados para que puedan participar en el proceso.</p>
-        <a href="${enlace}" style="display: inline-block; padding: 12px 24px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; margin: 16px 0;">
-          Ver estado del proceso
-        </a>
-        <p style="color: #666; font-size: 14px;">Podéis ver el número de empleados que se han unido, pero no quiénes son.</p>
-        <hr style="border: none; border-top: 1px solid #eee;" />
-        <p style="color: #999; font-size: 12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1f2937;">
+        <div style="background: #0d9488; padding: 24px 32px; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 22px;">La Cabina Colectiva</h1>
+        </div>
+        <div style="padding: 32px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+          <h2 style="color: #111827; margin-top: 0;">Se ha iniciado un proceso de representación colectiva en ${nombreEmpresa}</h2>
+          <p style="color: #4b5563;">Estimado/a equipo de Recursos Humanos,</p>
+          <p style="color: #4b5563;">Un empleado de <strong>${nombreEmpresa}</strong> ha iniciado un proceso para constituir una representación colectiva a través de La Cabina Colectiva.</p>
+
+          <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 14px 18px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0 0 8px; color: #134e4a; font-weight: bold;">¿Qué es La Cabina Colectiva?</p>
+            <p style="margin: 0; color: #134e4a; font-size: 14px;">Una plataforma que facilita la creación de comités de empresa o delegados de personal de forma ordenada, transparente y digital. El proceso respeta en todo momento la privacidad de los empleados: RRHH puede ver cuántos participan, pero nunca quiénes son.</p>
+          </div>
+
+          <p style="color: #4b5563; font-weight: bold;">¿Qué os pedimos?</p>
+          <p style="color: #4b5563; font-size: 14px;">Colaborar compartiendo los emails corporativos de vuestros empleados para que puedan ser invitados a participar. Accedéis al portal de RRHH con el botón de abajo.</p>
+
+          <div style="margin: 24px 0;">
+            <a href="${enlace}" style="display: inline-block; padding: 14px 28px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px; margin-right: 12px;">
+              Ver estado del proceso →
+            </a>
+            <a href="${enlaceComoFunciona}" style="display: inline-block; padding: 14px 28px; background-color: #f3f4f6; color: #374151; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px; border: 1px solid #d1d5db;">
+              Cómo funciona
+            </a>
+          </div>
+
+          <p style="color: #6b7280; font-size: 13px;">Si tenéis preguntas, podéis responder a este email o contactarnos en <a href="mailto:hola@lacabinacolectiva.es" style="color: #0d9488;">hola@lacabinacolectiva.es</a>.</p>
+
+          <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 24px 0;" />
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+        </div>
       </div>
     `,
   })
@@ -93,15 +137,29 @@ export async function enviarMagicLink(email: string, link: string) {
     to: email,
     subject: 'Tu enlace de acceso — La Cabina Colectiva',
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #0d9488;">La Cabina Colectiva</h1>
-        <p>Aquí tienes tu enlace de acceso. Es válido para una sola sesión.</p>
-        <a href="${link}" style="display:inline-block; padding:12px 24px; background:#0d9488; color:white; text-decoration:none; border-radius:8px; margin: 16px 0;">
-          Acceder al proceso
-        </a>
-        <p style="color:#999; font-size:12px; margin-top: 16px;">Si no solicitaste este enlace, ignora este email.</p>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-        <p style="color:#999; font-size:12px;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1f2937;">
+        <div style="background: #0d9488; padding: 24px 32px; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 22px;">La Cabina Colectiva</h1>
+        </div>
+        <div style="padding: 32px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+          <h2 style="color: #111827; margin-top: 0;">Tu enlace de acceso está listo</h2>
+          <p style="color: #4b5563;">Haz clic en el botón para entrar directamente a tu dashboard del proceso. No necesitas contraseña.</p>
+
+          <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 14px 18px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0; color: #134e4a; font-size: 14px;"><strong>¿Qué ocurre al hacer clic?</strong></p>
+            <p style="margin: 8px 0 0; color: #134e4a; font-size: 14px;">Accedes directamente a tu espacio personal dentro del proceso de representación colectiva. Desde ahí podrás ver el estado, enviar propuestas o participar en la elección de representantes según la fase en que esté el proceso.</p>
+          </div>
+
+          <a href="${link}" style="display:inline-block; padding:14px 28px; background:#0d9488; color:white; text-decoration:none; border-radius:8px; margin: 8px 0; font-weight: bold; font-size: 16px;">
+            Acceder al proceso →
+          </a>
+
+          <p style="color: #6b7280; font-size: 13px; margin-top: 24px;">⚠️ Este enlace es de <strong>un solo uso</strong> y caduca en 24 horas. Si necesitas un nuevo enlace, vuelve a solicitarlo desde la página de acceso.</p>
+          <p style="color: #9ca3af; font-size: 12px;">Si no solicitaste este enlace, ignora este email.</p>
+
+          <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 24px 0;" />
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+        </div>
       </div>
     `,
   })
