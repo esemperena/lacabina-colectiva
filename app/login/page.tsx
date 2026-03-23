@@ -8,18 +8,12 @@ type TipoLogin = 'empleado' | 'rrhh';
 export default function LoginPage() {
   const [tipo, setTipo] = useState<TipoLogin>('empleado');
   const [email, setEmail] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [apellidos, setApellidos] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (tipo === 'empleado' && (!nombre.trim() || !apellidos.trim())) {
-      setError('El nombre y los apellidos son obligatorios.');
-      return;
-    }
     setLoading(true);
     setError('');
 
@@ -27,7 +21,7 @@ export default function LoginPage() {
       const response = await fetch('/api/auth/magic-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, tipo, nombre: nombre.trim() || undefined, apellidos: apellidos.trim() || undefined }),
+        body: JSON.stringify({ email, tipo }),
       });
 
       const data = await response.json();
@@ -56,25 +50,15 @@ export default function LoginPage() {
           <p className="text-gray-600 mb-6">
             Te hemos enviado un enlace de acceso a <strong>{email}</strong>. Revisa tu bandeja de entrada. Si no aparece en unos minutos, revisa también la carpeta de spam.
           </p>
-          <p className="text-sm text-gray-500 mb-8">
-            El enlace es válido durante 7 días.
-          </p>
+          <p className="text-sm text-gray-500 mb-8">El enlace es válido durante 7 días.</p>
           <button
-            onClick={() => {
-              setSent(false);
-              setEmail('');
-              setNombre('');
-              setApellidos('');
-              setError('');
-            }}
+            onClick={() => { setSent(false); setEmail(''); setError(''); }}
             className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
           >
             Enviar otro enlace
           </button>
           <p className="text-sm text-gray-600 mt-6">
-            <Link href="/" className="text-teal-600 hover:text-teal-700 font-semibold">
-              Volver al inicio
-            </Link>
+            <Link href="/" className="text-teal-600 hover:text-teal-700 font-semibold">Volver al inicio</Link>
           </p>
         </div>
       </div>
@@ -100,70 +84,25 @@ export default function LoginPage() {
         <div className="flex gap-2 mb-8 bg-gray-100 p-1 rounded-lg">
           <button
             onClick={() => { setTipo('empleado'); setError(''); }}
-            className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${
-              tipo === 'empleado'
-                ? 'bg-white text-teal-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${tipo === 'empleado' ? 'bg-white text-teal-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}
           >
             Soy empleado
           </button>
           <button
             onClick={() => { setTipo('rrhh'); setError(''); }}
-            className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${
-              tipo === 'rrhh'
-                ? 'bg-white text-teal-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`flex-1 py-2 px-4 rounded-md font-semibold transition-colors ${tipo === 'rrhh' ? 'bg-white text-teal-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}
           >
             Soy RRHH
           </button>
         </div>
 
-        {/* Error Message */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-800 text-sm">{error}</p>
           </div>
         )}
 
-        {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
-          {tipo === 'empleado' && (
-            <>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="nombre" className="block text-sm font-semibold text-gray-900 mb-2">
-                    Nombre <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="nombre"
-                    type="text"
-                    placeholder="Tu nombre"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="apellidos" className="block text-sm font-semibold text-gray-900 mb-2">
-                    Apellidos <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="apellidos"
-                    type="text"
-                    placeholder="Tus apellidos"
-                    value={apellidos}
-                    onChange={(e) => setApellidos(e.target.value)}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
-                  />
-                </div>
-              </div>
-            </>
-          )}
-
           <div>
             <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
               Tu correo electrónico
@@ -190,18 +129,14 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-lg font-semibold text-white transition-colors ${
-              loading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-teal-600 hover:bg-teal-700'
-            }`}
+            className={`w-full py-3 rounded-lg font-semibold text-white transition-colors ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700'}`}
           >
             {loading ? 'Enviando...' : 'Enviar enlace de acceso'}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-8">
-          ¿Eres nuevo? {' '}
+          ¿Eres nuevo?{' '}
           <Link href="/iniciar" className="text-teal-600 hover:text-teal-700 font-semibold">
             Inicia un proceso
           </Link>

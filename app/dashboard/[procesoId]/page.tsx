@@ -104,14 +104,16 @@ export default async function DashboardPage({
   }
 
   const { data: proceso, error: procesoError } = await supabaseAdmin
-    .from('procesos').select('*, empresa:empresas(*)').eq('id', procesoId).single();
+    .from('procesos')
+    .select('id, fase, estado, empleados_unidos, empleados_objetivo, fase2_inicio, empresa:empresas(id, nombre, sector, num_empleados, rrhh_email)')
+    .eq('id', procesoId).single();
   if (!proceso || procesoError) redirect('/login');
 
   interface ProcesoData {
     id: string; fase: string; estado: string;
     empleados_unidos: number; empleados_objetivo: number;
     fase2_inicio?: string | null;
-    empresa: { nombre: string; sector: string; num_empleados: number; };
+    empresa: { id: string; nombre: string; sector: string; num_empleados: number; rrhh_email: string; };
   }
 
   const procesoData = proceso as ProcesoData;
@@ -121,8 +123,14 @@ export default async function DashboardPage({
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app';
   const inviteLink = `${APP_URL}/invitar/${procesoId}`;
 
-  // Use empleados_objetivo (stored directly on procesos) as fallback if empresa.num_empleados is missing
-  const totalEmpleados = procesoData.empresa?.num_empleados || procesoData.empleados_objetivo || 0;
+  // Calcular representantes necesarios según la ley (ET art. 62-66)
+  // Fuentes: empresa.num_empleados → empleados_objetivo → query directa a empresas
+  let totalEmpleados = Number(procesoData.empresa?.num_empleados) || Number(procesoData.empleados_objetivo) || 0;
+  if (totalEmpleados === 0 && procesoData.empresa?.id) {
+    // Último recurso: re-query directo a la tabla empresas
+    const { data: emp } = await supabaseAdmin.from('empresas').select('num_empleados').eq('id', procesoData.empresa.id).single();
+    totalEmpleados = Number(emp?.num_empleados) || 0;
+  }
   const representantesNecesarios = calcularRepresentantesNecesarios(totalEmpleados);
   let voluntariosActuales = 0;
   if (fase === 3) {
