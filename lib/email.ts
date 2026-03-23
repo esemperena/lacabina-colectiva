@@ -28,7 +28,7 @@ export async function enviarInvitacionEmpleado(
           <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 14px 18px; margin: 20px 0; border-radius: 4px;">
             <p style="margin: 0 0 6px; color: #134e4a; font-weight: bold;">¿Qué pasa si hago clic?</p>
             <ol style="margin: 0; padding-left: 18px; color: #134e4a; font-size: 14px; line-height: 1.8;">
-              <li>Accedes a un formulario breve donde puedes añadir tu nombre (opcional).</li>
+              <li>Accedes a un formulario breve donde puedes añadir tus datos.</li>
               <li>Te unes al proceso de forma confidencial — la empresa no sabrá que participas si no quieres.</li>
               <li>Podrás enviar propuestas, votar y, si quieres, presentarte como representante.</li>
             </ol>
