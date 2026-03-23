@@ -4,7 +4,7 @@ import { generarToken } from '@/lib/utils'
 import { Resend } from 'resend'
 
 const ADMIN_EMAIL = 'esemperena4@gmail.com'
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://lacabinacolectiva.es'
 
 export async function POST(request: NextRequest) {
   const { email } = await request.json()
@@ -17,11 +17,17 @@ export async function POST(request: NextRequest) {
   const token = generarToken()
   const expiresAt = new Date(Date.now() + 1000 * 60 * 60) // 1 hour
 
-  await supabaseAdmin.from('admin_tokens').insert({
+  // Insert token with error checking
+  const { error: insertError } = await supabaseAdmin.from('admin_tokens').insert({
     token,
     used: false,
     expires_at: expiresAt.toISOString(),
   })
+
+  if (insertError) {
+    console.error('Error inserting admin token:', insertError)
+    return NextResponse.json({ success: false, error: 'Error interno' }, { status: 500 })
+  }
 
   const resend = new Resend(process.env.RESEND_API_KEY!)
   await resend.emails.send({
