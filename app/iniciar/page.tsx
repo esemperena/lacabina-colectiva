@@ -33,12 +33,21 @@ export default function IniciarPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Limpiar error de empresa pequeña si cambia el número de empleados
+    if (name === 'num_empleados' && error === 'EMPRESA_PEQUENA') {
+      setError('');
+    }
   };
 
   const handleNext = () => {
     if (step === 1) {
       if (!formData.nombre || !formData.sector || !formData.num_empleados || !formData.rrhh_email) {
         setError('Por favor, completa todos los campos');
+        return;
+      }
+      const numEmp = parseInt(formData.num_empleados);
+      if (numEmp < 6) {
+        setError('EMPRESA_PEQUENA');
         return;
       }
       setError('');
@@ -267,11 +276,21 @@ export default function IniciarPage() {
                   />
                 </div>
 
-                {error && (
+                {error === 'EMPRESA_PEQUENA' ? (
+                  <div className="bg-amber-50 border border-amber-300 rounded-lg p-5">
+                    <p className="font-semibold text-amber-900 mb-2">⚖️ Tu empresa no necesita representantes sindicales</p>
+                    <p className="text-sm text-amber-800 mb-3">
+                      Según el <strong>Estatuto de los Trabajadores (art. 62)</strong>, las empresas con menos de 6 empleados no están obligadas a tener delegados de personal ni comité de empresa.
+                    </p>
+                    <p className="text-sm text-amber-700">
+                      La Cabina Colectiva está diseñada para empresas de 6 o más empleados. Si tu equipo crece en el futuro, ¡vuelve cuando llegues a ese umbral!
+                    </p>
+                  </div>
+                ) : error ? (
                   <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                     {error}
                   </div>
-                )}
+                ) : null}
               </div>
             </div>
           )}
@@ -372,8 +391,8 @@ export default function IniciarPage() {
             )}
             <button
               onClick={step === 3 ? handleSubmit : handleNext}
-              disabled={loading}
-              className="flex-1 px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50"
+              disabled={loading || error === 'EMPRESA_PEQUENA'}
+              className="flex-1 px-6 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Creando...' : step === 3 ? 'Crear Proceso' : 'Siguiente'}
             </button>

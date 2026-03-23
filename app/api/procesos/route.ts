@@ -31,6 +31,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validar número mínimo de empleados (ley española ET art. 62)
+    if (Number(num_empleados) < 6) {
+      return NextResponse.json(
+        { error: 'Empresas con menos de 6 empleados no requieren representantes según la ley española (ET art. 62).' },
+        { status: 400 }
+      );
+    }
+
     // Create empresa record
     const { data: empresa, error: empresaError } = await supabaseAdmin
       .from('empresas')
