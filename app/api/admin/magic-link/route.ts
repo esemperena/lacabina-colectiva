@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
   const resend = new Resend(process.env.RESEND_API_KEY!)
   await resend.emails.send({
-    from: 'onboarding@resend.dev',
+    from: 'hola@lacabinacolectiva.es',
     to: email,
     subject: 'Acceso admin — La Cabina Colectiva',
     html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">

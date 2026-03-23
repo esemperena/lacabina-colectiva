@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
-export const FROM_EMAIL = 'onboarding@resend.dev'
+export const FROM_EMAIL = 'hola@lacabinacolectiva.es'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://astounding-kashata-8c4839.netlify.app'
 
 export async function enviarInvitacionEmpleado(

@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const empresa = proceso.empresa as unknown as { nombre: string; rrhh_email: string };
 
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'hola@lacabinacolectiva.es',
       to: 'esemperena4@gmail.com',
       subject: `[La Cabina Colectiva] Consulta de RRHH — ${empresa.nombre || empresaNombre}`,
       html: `

@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
   const resend = new Resend(apiKey)
   try {
     const result = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'hola@lacabinacolectiva.es',
       to: targetEmail,
       subject: '✅ Test email — La Cabina Colectiva',
       html: `<p>Este es un email de prueba enviado desde La Cabina Colectiva.</p><p>APP_URL: <code>${appUrl}</code></p><p>Si recibes esto, el sistema de emails funciona correctamente.</p>`,
