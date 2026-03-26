@@ -29,7 +29,6 @@ export async function POST(request: NextRequest) {
               <p style="margin: 0; white-space: pre-wrap; line-height: 1.7;">${mensaje}</p>
             </div>
             <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 24px 0;" />
-            <p style="color: #9ca3af; font-size: 12px; margin: 0;">Puedes responder directamente a este email para contestar a ${email}.</p>
           </div>
         </div>
       `,
