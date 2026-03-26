@@ -13,6 +13,12 @@ export const metadata: Metadata = {
   title: "La Cabina Colectiva",
   description: "Crea un comité de empresa o delegados de personal de forma anónima, segura y respaldada por la ley.",
   keywords: "comité de empresa, delegados de personal, representación colectiva, anónimo, RGPD",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
