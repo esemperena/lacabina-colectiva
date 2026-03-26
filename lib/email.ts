@@ -154,14 +154,15 @@ export async function enviarBienvenidaIniciador(
           <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 14px 18px; margin: 20px 0; border-radius: 4px;">
             <p style="margin: 0 0 8px; color: #134e4a; font-weight: bold;">¿Qué pasa ahora?</p>
             <ol style="margin: 0; padding-left: 18px; color: #134e4a; font-size: 14px; line-height: 1.9;">
-              <li><strong>Completa tu registro</strong> — introduce tu nombre y apellidos en el formulario (mismo que el de tus compañeros).</li>
+              <li><strong>Completa tu registro</strong> — introduce tu nombre y apellidos en el formulario.</li>
               <li><strong>Tus compañeros reciben la invitación</strong> — los emails que añadiste ya tienen su enlace para unirse.</li>
               <li><strong>El proceso avanza</strong> cuando se alcance el mínimo de participantes necesarios.</li>
             </ol>
           </div>
 
-          <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 18px; margin: 16px 0;">
-            <p style="margin: 0; color: #6b7280; font-size: 13px;">🔒 <strong>Tu participación es confidencial.</strong> La empresa solo verá el número total de participantes, nunca quiénes son.</p>
+          <div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 14px 18px; margin: 16px 0;">
+            <p style="margin: 0 0 6px; color: #92400e; font-weight: bold;">🔒 Tu identidad está protegida</p>
+            <p style="margin: 0; color: #78350f; font-size: 13px; line-height: 1.6;">Ni la empresa ni tus compañeros sabrán que has sido tú quien ha iniciado este proceso. Para todos, eres un participante más. La plataforma nunca revela quién lo inició.</p>
           </div>
 
           <div style="margin: 24px 0;">
