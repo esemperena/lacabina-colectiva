@@ -19,6 +19,7 @@ export default function UnirsePagePage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string>('');
   const [procesoId, setProcesoId] = useState<string>('');
+  const [tokenAcceso, setTokenAcceso] = useState<string>('');
   const [formData, setFormData] = useState<FormData>({
     nombre: '',
     apellidos: '',
@@ -66,6 +67,7 @@ export default function UnirsePagePage() {
 
       const data = await response.json();
       setProcesoId(data.proceso_id);
+      setTokenAcceso(data.token_acceso);
       setSuccess(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al unirse al proceso');
@@ -107,7 +109,7 @@ export default function UnirsePagePage() {
               </ul>
             </div>
             <Link
-              href={`/dashboard/${procesoId}`}
+              href={`/api/auth/verify/${tokenAcceso}`}
               className="inline-block bg-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
             >
               Ir al proceso
