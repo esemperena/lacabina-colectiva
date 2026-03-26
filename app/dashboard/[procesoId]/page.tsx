@@ -289,15 +289,42 @@ export default async function DashboardPage({
 
         {/* Timeline card (compact) + participation bar */}
         <div className="bg-white rounded-xl border border-gray-200 px-6 py-5">
-          {/* Compact participation bar */}
-          <div className="flex items-center gap-3 mb-5">
-            <span className="text-sm text-gray-600 whitespace-nowrap">
-              <strong className="text-gray-900">{procesoData.empleados_unidos}</strong> / {procesoData.empleados_objetivo} empleados
-            </span>
-            <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
-              <div className="bg-teal-500 h-full transition-all duration-500" style={{ width: `${Math.min(porcentaje, 100)}%` }} />
+          {/* Participation bar */}
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-sm font-semibold text-gray-700">
+                Participación: <span className="text-teal-600">{procesoData.empleados_unidos}</span>
+                <span className="text-gray-400"> / {procesoData.empleados_objetivo} empleados</span>
+              </span>
+              <span className="text-sm font-bold text-teal-600">{porcentaje}%</span>
             </div>
-            <span className="text-sm font-bold text-teal-600 whitespace-nowrap">{porcentaje}%</span>
+            <div className="relative bg-gray-100 rounded-full h-3 overflow-visible">
+              {/* Progreso actual */}
+              <div
+                className="bg-teal-500 h-full rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(porcentaje, 100)}%` }}
+              />
+              {/* Marcador del umbral mínimo */}
+              {fase === 1 && umbralProceso < procesoData.empleados_objetivo && (
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center"
+                  style={{ left: `${Math.round((umbralProceso / procesoData.empleados_objetivo) * 100)}%` }}
+                >
+                  <div className="w-0.5 h-4 bg-amber-500 rounded" />
+                </div>
+              )}
+            </div>
+            {fase === 1 && (
+              <div className="flex items-center justify-between mt-1.5">
+                <span className="text-xs text-gray-400">0</span>
+                <span
+                  className="text-xs text-amber-600 font-medium"
+                  style={{ marginLeft: `calc(${Math.round((umbralProceso / procesoData.empleados_objetivo) * 100)}% - 2rem)` }}
+                >
+                  mínimo: {umbralProceso}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Thin horizontal timeline */}
