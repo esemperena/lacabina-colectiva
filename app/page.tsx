@@ -69,12 +69,11 @@ export default async function Home() {
               Respaldado por el Estatuto de los Trabajadores
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
-              Inicia un proceso de
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600"> representación colectiva</span>
-              {' '}en tu empresa
+              El puente entre
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600"> empleados y empresa</span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Anónimo, seguro y legal. Cualquier empleado puede dar el primer paso sin que nadie sepa quién lo hizo.
+              Un canal estructurado donde los empleados hacen llegar su voz y la empresa entiende mejor las necesidades de su equipo. Confidencial, legal y sin fricciones.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/iniciar" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-teal-700 transition-all text-lg shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/30 hover:-translate-y-0.5">
@@ -111,15 +110,15 @@ export default async function Home() {
           <div className="text-center mb-16">
             <p className="text-teal-600 font-semibold text-sm uppercase tracking-wide mb-3">El proceso</p>
             <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Cuatro fases, un objetivo</h3>
-            <p className="text-gray-500 max-w-2xl mx-auto text-lg">Un proceso estructurado que garantiza la representación legítima y anónima de todos los empleados.</p>
+            <p className="text-gray-500 max-w-2xl mx-auto text-lg">Un proceso estructurado que abre un canal de comunicación real entre empleados y empresa, con base legal y de forma ordenada.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { n: 1, title: 'Invitaciones', text: 'Un empleado inicia el proceso de forma anónima. La plataforma envía invitaciones sin revelar quién las originó. RRHH es notificado y puede sumar más contactos.', color: 'from-emerald-500 to-emerald-600', icon: '📨' },
-              { n: 2, title: 'Propuestas', text: 'Al alcanzar el umbral de participación, los empleados envían propuestas y quejas — anónimas o firmadas — y votan las más importantes.', color: 'from-teal-500 to-teal-600', icon: '💡' },
-              { n: 3, title: 'Representantes', text: 'Los empleados pueden presentarse como candidatos. Si hay suficientes, se vota; si no, se sortea. Los designados aceptan o rechazan hasta completar el número legal.', color: 'from-cyan-600 to-cyan-700', icon: '🗳️' },
-              { n: 4, title: 'Diálogo', text: 'Los representantes inician un diálogo formal con la dirección. La plataforma facilita la comunicación para llegar a acuerdos concretos.', color: 'from-sky-600 to-sky-700', icon: '🤝' },
+              { n: 1, title: 'Invitaciones', text: 'Un empleado inicia el proceso de forma confidencial. La plataforma envía invitaciones sin revelar quién las originó. RRHH es notificado y puede sumar más contactos.', color: 'from-emerald-500 to-emerald-600', icon: '📨' },
+              { n: 2, title: 'Propuestas', text: 'Los empleados comparten sus inquietudes, ideas y necesidades de forma ordenada. Las más valoradas por el equipo suben a lo más alto de la lista.', color: 'from-teal-500 to-teal-600', icon: '💡' },
+              { n: 3, title: 'Representantes', text: 'El equipo elige a las personas que mejor los representan para trasladar su voz. Si hay suficientes voluntarios, se vota; si no, se sortea.', color: 'from-cyan-600 to-cyan-700', icon: '🗳️' },
+              { n: 4, title: 'Comunicación', text: 'Los representantes presentan las prioridades del equipo a la dirección. Un canal formal donde ambos lados se escuchan y avanzan juntos.', color: 'from-sky-600 to-sky-700', icon: '🤝' },
             ].map(({ n, title, text, color, icon }) => (
               <div key={n} className="group relative bg-white rounded-2xl border border-gray-100 p-7 hover:shadow-xl hover:shadow-gray-100/50 hover:-translate-y-1 transition-all duration-300">
                 {/* Phase number badge */}
@@ -255,7 +254,7 @@ export default async function Home() {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">Da el primer paso</h3>
-          <p className="text-teal-100 text-lg mb-10 max-w-xl mx-auto">Tu empresa no sabrá que fuiste tú. Tus datos son confidenciales desde el primer momento.</p>
+          <p className="text-teal-100 text-lg mb-10 max-w-xl mx-auto">La voz de tu equipo, de forma ordenada y con base legal. Tus datos son confidenciales desde el primer momento.</p>
           <Link href="/iniciar" className="inline-flex items-center gap-2 bg-white text-teal-700 px-8 py-4 rounded-xl font-bold hover:bg-teal-50 transition-all text-lg shadow-xl hover:-translate-y-0.5">
             Iniciar Proceso
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>

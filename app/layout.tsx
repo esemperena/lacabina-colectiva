@@ -11,8 +11,8 @@ const jakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "La Cabina Colectiva",
-  description: "Crea un comité de empresa o delegados de personal de forma anónima, segura y respaldada por la ley.",
-  keywords: "comité de empresa, delegados de personal, representación colectiva, anónimo, RGPD",
+  description: "El canal de comunicación entre empleados y empresa. Los empleados hacen llegar su voz; la empresa entiende las necesidades de su equipo. Confidencial, legal y sin fricciones.",
+  keywords: "representación colectiva, comunicación empresa empleados, comité de empresa, delegados de personal, RGPD",
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },

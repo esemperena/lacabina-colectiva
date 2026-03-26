@@ -28,7 +28,7 @@ const FASES = [
     title: 'Fase 3 — Elección de representantes', titleColor: 'text-cyan-800',
   },
   {
-    num: 4, label: 'Diálogo con la dirección', desc: 'Los representantes negocian con la empresa.',
+    num: 4, label: 'Comunicación con la dirección', desc: 'Los representantes trasladan las prioridades del equipo a la empresa.',
     color: 'bg-sky-700', text: 'text-sky-700', arrow: 'text-sky-600',
     light: 'bg-sky-50 border-sky-200', noteLight: 'bg-sky-50 border-sky-200 text-sky-900',
     title: 'Fase 4 — Diálogo con la dirección', titleColor: 'text-sky-800',
@@ -59,7 +59,7 @@ export default function ComoFuncionaPage() {
           <span className="inline-block bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-6">Guía completa</span>
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">Cómo funciona La Cabina Colectiva</h1>
           <p className="text-xl text-gray-500 leading-relaxed">
-            Un proceso diseñado para que los empleados puedan organizarse y negociar colectivamente con su empresa, de forma completamente segura, confidencial y respaldada por la ley.
+            Una plataforma que crea un canal de comunicación estructurado entre empleados y empresa. Los empleados hacen llegar su voz de forma colectiva y ordenada; la empresa entiende mejor las necesidades de su equipo. Un punto de encuentro donde ambos lados se alinean y avanzan juntos.
           </p>
         </div>
       </section>
@@ -231,19 +231,19 @@ export default function ComoFuncionaPage() {
                 <h2 className="text-2xl font-bold text-gray-900">{f.title}</h2>
               </div>
               <p className="text-gray-500 text-lg leading-relaxed mb-6">
-                Los representantes elegidos se reúnen con la dirección con las propuestas más votadas. <strong className="text-gray-700">Un diálogo estructurado, transparente y con base legal.</strong>
+                Los representantes elegidos trasladan las prioridades del equipo a la dirección. <strong className="text-gray-700">Un canal formal donde empresa y empleados se escuchan, se entienden mejor y pueden construir soluciones juntos.</strong>
               </p>
               <div className="bg-gray-50 rounded-xl border border-gray-100 p-6 mb-4">
                 <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2"><span>👤</span> Lo que hacen los representantes</h3>
                 <ul className="space-y-3 text-gray-500 text-sm">
-                  <li className="flex gap-3"><span className={`${f.arrow} font-bold mt-0.5`}>→</span><span>Presentan las propuestas más votadas a la dirección, en orden de prioridad.</span></li>
-                  <li className="flex gap-3"><span className={`${f.arrow} font-bold mt-0.5`}>→</span><span>Negocian acuerdos concretos: salarios, flexibilidad horaria, condiciones de trabajo, seguridad, etc.</span></li>
-                  <li className="flex gap-3"><span className={`${f.arrow} font-bold mt-0.5`}>→</span><span>Los acuerdos quedan registrados para que todos los participantes puedan consultarlos.</span></li>
+                  <li className="flex gap-3"><span className={`${f.arrow} font-bold mt-0.5`}>→</span><span>Presentan a la dirección las necesidades del equipo, ordenadas por prioridad.</span></li>
+                  <li className="flex gap-3"><span className={`${f.arrow} font-bold mt-0.5`}>→</span><span>Abren una conversación real sobre los temas que más importan: horarios, condiciones, ambiente de trabajo, reconocimiento, etc.</span></li>
+                  <li className="flex gap-3"><span className={`${f.arrow} font-bold mt-0.5`}>→</span><span>Los compromisos y respuestas quedan registrados y son visibles para todos los participantes.</span></li>
                 </ul>
               </div>
               <div className="bg-gray-50 rounded-xl border border-gray-100 p-6">
                 <h3 className="font-bold text-gray-700 mb-3 flex items-center gap-2"><span>🏢</span> El rol de RRHH</h3>
-                <p className="text-gray-500 text-sm">Reciben el listado de propuestas priorizadas y participan en las reuniones. Es la primera fase de comunicación directa y oficial entre ambas partes.</p>
+                <p className="text-gray-500 text-sm">Reciben el listado de necesidades priorizadas por el equipo y participan en las reuniones. Es el primer momento de escucha activa y comunicación directa entre empresa y empleados.</p>
               </div>
             </section>
           );
@@ -302,7 +302,7 @@ export default function ComoFuncionaPage() {
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '28px 28px' }} />
           <div className="relative">
             <h2 className="text-3xl font-bold text-white mb-4">¿Listo para empezar?</h2>
-            <p className="text-teal-100 text-lg mb-8 max-w-xl mx-auto">Gratis, confidencial y respaldado por la ley.</p>
+            <p className="text-teal-100 text-lg mb-8 max-w-xl mx-auto">Un equipo que se siente escuchado rinde más. Empieza aquí.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/iniciar" className="bg-white text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-teal-50 transition-colors text-lg">Iniciar un proceso</Link>
               <Link href="/login" className="border-2 border-white/60 text-white font-bold px-8 py-4 rounded-xl hover:bg-white/10 transition-colors text-lg">Acceder a mi proceso</Link>
