@@ -69,8 +69,9 @@ export default async function Home() {
               Respaldado por el Estatuto de los Trabajadores
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
-              El puente entre
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600"> empleados y empresa</span>
+              Inicia un proceso de
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600"> representación colectiva</span>
+              {' '}en tu empresa
             </h2>
             <p className="text-lg sm:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
               Un canal estructurado donde los empleados hacen llegar su voz y la empresa entiende mejor las necesidades de su equipo. Confidencial, legal y sin fricciones.
