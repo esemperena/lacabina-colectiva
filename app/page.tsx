@@ -64,10 +64,7 @@ export default async function Home() {
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-800 text-sm font-semibold px-4 py-1.5 rounded-full mb-8">
-              <span className="w-2 h-2 bg-teal-500 rounded-full animate-pulse" />
-              Respaldado por el Estatuto de los Trabajadores
-            </div>
+
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
               Inicia un proceso de
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600"> representación colectiva</span>
@@ -176,7 +173,7 @@ export default async function Home() {
             {[
               { icon: '🔐', title: 'Confidencial', text: 'La empresa no puede saber quién ha iniciado el proceso ni quién participa. Tu nombre y tus datos nunca se comparten con tu empresa sin tu consentimiento.' },
               { icon: '⚖️', title: 'Cumplimiento RGPD', text: 'Totalmente conforme con RGPD. Los datos se cifran en tránsito y reposo, y se eliminan tras completar el proceso.' },
-              { icon: '📋', title: 'Marco Legal', text: 'Respaldado por el Estatuto de los Trabajadores (arts. 62-66). Todo el proceso es documentado y verificable.' },
+              { icon: '📋', title: 'Marco Legal', text: 'El proceso cumple con la normativa laboral española. Todo queda documentado y es verificable.' },
             ].map(({ icon, title, text }) => (
               <div key={title} className="bg-gray-50 rounded-2xl p-8 hover:bg-teal-50 transition-colors">
                 <div className="text-3xl mb-4">{icon}</div>

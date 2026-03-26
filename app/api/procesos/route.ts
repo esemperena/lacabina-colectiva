@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { hashEmail, generarToken } from '@/lib/utils';
-import { enviarInvitacionEmpleado, enviarNotificacionRRHH } from '@/lib/email';
+import { enviarBienvenidaIniciador, enviarInvitacionEmpleado, enviarNotificacionRRHH } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
     // Enviar email al iniciador — mismo flujo que los compañeros (/unirse/[token])
     const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://lacabinacolectiva.es';
     try {
-      await enviarInvitacionEmpleado(iniciador_email, tokenIniciador, nombre);
+      await enviarBienvenidaIniciador(iniciador_email, tokenIniciador, nombre);
     } catch (emailError) {
       console.error('Error sending initiator access email:', emailError);
     }

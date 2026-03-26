@@ -131,6 +131,58 @@ export async function enviarInformeRRHH(
   })
 }
 
+export async function enviarBienvenidaIniciador(
+  email: string,
+  tokenAcceso: string,
+  nombreEmpresa: string
+) {
+  const enlace = `${APP_URL}/unirse/${tokenAcceso}`
+  const enlaceComoFunciona = `${APP_URL}/como-funciona`
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `Has iniciado un proceso de representación en ${nombreEmpresa} — completa tu registro`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1f2937;">
+        <div style="background: #0d9488; padding: 24px 32px; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 22px;">La Cabina Colectiva</h1>
+        </div>
+        <div style="padding: 32px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+          <h2 style="color: #111827; margin-top: 0;">¡Has iniciado el proceso en ${nombreEmpresa}!</h2>
+          <p style="color: #4b5563;">El proceso de representación colectiva está en marcha. Ahora necesitas completar tu propio registro como participante.</p>
+
+          <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 14px 18px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0 0 8px; color: #134e4a; font-weight: bold;">¿Qué pasa ahora?</p>
+            <ol style="margin: 0; padding-left: 18px; color: #134e4a; font-size: 14px; line-height: 1.9;">
+              <li><strong>Completa tu registro</strong> — introduce tu nombre y apellidos en el formulario (mismo que el de tus compañeros).</li>
+              <li><strong>Tus compañeros reciben la invitación</strong> — los emails que añadiste ya tienen su enlace para unirse.</li>
+              <li><strong>El proceso avanza</strong> cuando se alcance el mínimo de participantes necesarios.</li>
+            </ol>
+          </div>
+
+          <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 18px; margin: 16px 0;">
+            <p style="margin: 0; color: #6b7280; font-size: 13px;">🔒 <strong>Tu participación es confidencial.</strong> La empresa solo verá el número total de participantes, nunca quiénes son.</p>
+          </div>
+
+          <div style="margin: 24px 0;">
+            <a href="${enlace}" style="display: inline-block; padding: 14px 28px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px; margin-right: 12px;">
+              Completar mi registro →
+            </a>
+            <a href="${enlaceComoFunciona}" style="display: inline-block; padding: 14px 28px; background-color: #f3f4f6; color: #374151; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px; border: 1px solid #d1d5db;">
+              Cómo funciona
+            </a>
+          </div>
+
+          <p style="color: #9ca3af; font-size: 12px;">Este enlace es personal. Si tienes alguna duda, escríbenos a <a href="mailto:hola@lacabinacolectiva.es" style="color: #0d9488;">hola@lacabinacolectiva.es</a>.</p>
+
+          <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 24px 0;" />
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+        </div>
+      </div>
+    `,
+  })
+}
+
 export async function enviarMagicLink(email: string, link: string) {
   await resend.emails.send({
     from: FROM_EMAIL,
