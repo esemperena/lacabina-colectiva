@@ -49,6 +49,7 @@ export default function RepresentanteSection({
   const [estadoRepresentante, setEstadoRepresentante] = useState(estadoInicial);
   const [candidatos, setCandidatos] = useState(candidatosIniciales);
   const [respondiendo, setRespondiendo] = useState(false);
+  const [mostrarAvisoVisibilidad, setMostrarAvisoVisibilidad] = useState(false);
 
   const yaDecidido = esVoluntario || declina;
 
@@ -175,22 +176,47 @@ export default function RepresentanteSection({
             <p className="text-sm text-gray-700">
               Se necesitan <strong>{representantesNecesarios} representantes</strong>. Puedes presentarte como voluntario o indicar que no quieres serlo.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => handleAccion('voluntario')}
-                disabled={loading}
-                className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-              >
-                {loading ? 'Procesando…' : '🙋 Quiero ser representante'}
-              </button>
-              <button
-                onClick={() => handleAccion('declinar')}
-                disabled={loading}
-                className="bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-gray-700 font-semibold px-6 py-3 rounded-lg transition-colors"
-              >
-                {loading ? 'Procesando…' : 'No me presentaré'}
-              </button>
-            </div>
+
+            {/* Aviso de visibilidad antes de confirmar */}
+            {mostrarAvisoVisibilidad ? (
+              <div className="bg-amber-50 border border-amber-300 rounded-lg p-4 space-y-3">
+                <p className="text-sm font-semibold text-amber-900">👁 Tu nombre será visible para tus compañeros durante la votación</p>
+                <p className="text-sm text-amber-800">Si te presentas como candidato, el resto de participantes verá tu nombre para poder votarte. La empresa no tendrá acceso a esta información hasta que seas elegido representante.</p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => { setMostrarAvisoVisibilidad(false); handleAccion('voluntario'); }}
+                    disabled={loading}
+                    className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors"
+                  >
+                    {loading ? 'Procesando…' : 'Entendido, me presento'}
+                  </button>
+                  <button
+                    onClick={() => setMostrarAvisoVisibilidad(false)}
+                    disabled={loading}
+                    className="bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-semibold px-5 py-2 rounded-lg text-sm transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setMostrarAvisoVisibilidad(true)}
+                  disabled={loading}
+                  className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+                >
+                  🙋 Quiero ser representante
+                </button>
+                <button
+                  onClick={() => handleAccion('declinar')}
+                  disabled={loading}
+                  className="bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-gray-700 font-semibold px-6 py-3 rounded-lg transition-colors"
+                >
+                  {loading ? 'Procesando…' : 'No me presentaré'}
+                </button>
+              </div>
+            )}
           </div>
         ) : esVoluntario ? (
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">

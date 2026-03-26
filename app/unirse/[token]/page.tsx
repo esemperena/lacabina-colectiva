@@ -34,6 +34,16 @@ export default function UnirsePagePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.nombre.trim()) {
+      setError('El nombre es obligatorio.');
+      return;
+    }
+    if (!formData.apellidos.trim()) {
+      setError('Los apellidos son obligatorios.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -43,8 +53,8 @@ export default function UnirsePagePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token,
-          nombre: formData.nombre || undefined,
-          apellidos: formData.apellidos || undefined,
+          nombre: formData.nombre.trim(),
+          apellidos: formData.apellidos.trim(),
           sexo: formData.sexo || undefined,
         }),
       });
@@ -135,7 +145,7 @@ export default function UnirsePagePage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Nombre
+                Nombre <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -149,7 +159,7 @@ export default function UnirsePagePage() {
 
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Apellidos
+                Apellidos <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
