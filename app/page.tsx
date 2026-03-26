@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase";
 import { LogoLink } from "@/components/Logo";
+import ContactoForm from "@/components/ContactoForm";
 
 // Siempre datos frescos de la base de datos (sin caché)
 export const revalidate = 0;
@@ -40,6 +41,9 @@ export default async function Home() {
             <nav className="flex items-center gap-4 sm:gap-6">
               <Link href="/como-funciona" className="text-sm font-semibold text-gray-600 hover:text-teal-600 transition-colors hidden sm:block">
                 Cómo funciona
+              </Link>
+              <Link href="/contacto" className="text-sm font-semibold text-gray-600 hover:text-teal-600 transition-colors hidden sm:block">
+                Contacto
               </Link>
               <Link href="/login" className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-4 sm:px-5 py-2 rounded-lg transition-colors text-sm">
                 Accede a tu proceso
@@ -221,6 +225,19 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Contacto */}
+      <section className="py-20 sm:py-24 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">¿Tienes alguna pregunta?</h3>
+            <p className="text-gray-500">Escríbenos y te respondemos lo antes posible.</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
+            <ContactoForm compact />
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-20 sm:py-28 bg-gradient-to-br from-teal-600 to-emerald-700 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
@@ -242,7 +259,7 @@ export default async function Home() {
             <div className="flex gap-8 text-sm text-gray-400">
               <a href="#" className="hover:text-teal-600 transition-colors">Privacidad</a>
               <a href="#" className="hover:text-teal-600 transition-colors">Términos</a>
-              <a href="#" className="hover:text-teal-600 transition-colors">Contacto</a>
+              <Link href="/contacto" className="hover:text-teal-600 transition-colors">Contacto</Link>
             </div>
             <div className="text-sm text-gray-400">&copy; 2026 La Cabina Colectiva</div>
           </div>
