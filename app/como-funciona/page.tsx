@@ -59,7 +59,7 @@ export default function ComoFuncionaPage() {
           <span className="inline-block bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-6">Guía completa</span>
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">Cómo funciona La Cabina Colectiva</h1>
           <p className="text-xl text-gray-500 leading-relaxed">
-            Una plataforma que crea un canal de comunicación estructurado entre empleados y empresa. Los empleados hacen llegar su voz de forma colectiva y ordenada; la empresa entiende mejor las necesidades de su equipo. Un punto de encuentro donde ambos lados se alinean y avanzan juntos.
+            La Cabina Colectiva guía a cualquier empresa en la constitución de su comité de representación de los trabajadores — el órgano legal que da voz al equipo ante la dirección. Y lo hace creando un canal de comunicación real donde empleados y empresa se escuchan, alinean expectativas y avanzan juntos.
           </p>
         </div>
       </section>

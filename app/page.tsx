@@ -74,7 +74,7 @@ export default async function Home() {
               {' '}en tu empresa
             </h2>
             <p className="text-lg sm:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Un canal estructurado donde los empleados hacen llegar su voz y la empresa entiende mejor las necesidades de su equipo. Confidencial, legal y sin fricciones.
+              Crea un comité de representación de los trabajadores de forma ordenada y confidencial. Un canal oficial donde empleados y empresa se escuchan, alinean expectativas y avanzan juntos.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/iniciar" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-teal-700 transition-all text-lg shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/30 hover:-translate-y-0.5">
@@ -111,7 +111,7 @@ export default async function Home() {
           <div className="text-center mb-16">
             <p className="text-teal-600 font-semibold text-sm uppercase tracking-wide mb-3">El proceso</p>
             <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Cuatro fases, un objetivo</h3>
-            <p className="text-gray-500 max-w-2xl mx-auto text-lg">Un proceso estructurado que abre un canal de comunicación real entre empleados y empresa, con base legal y de forma ordenada.</p>
+            <p className="text-gray-500 max-w-2xl mx-auto text-lg">Constituir un comité de representación legítimo y reconocido legalmente — y de paso abrir un canal real de comunicación entre el equipo y la dirección.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -223,6 +223,7 @@ export default async function Home() {
             {[
               { q: '¿Mi empresa sabrá que participo?', a: 'No. La empresa no tiene acceso a los nombres ni a los datos de quién ha participado. Solo ve el número total de participantes y las propuestas agregadas. Tu nombre se guarda en la plataforma para gestionar el proceso, pero nunca se comparte con tu empresa sin tu consentimiento explícito.' },
               { q: '¿Puede mi empresa tomar represalias?', a: 'El derecho a la representación colectiva está protegido por el Estatuto de los Trabajadores. La empresa no puede identificar a quién inició el proceso ni a quién ha participado.' },
+              { q: '¿Qué es exactamente un comité de representación?', a: 'Es el órgano legal que representa a los empleados ante la empresa. Puede ser un delegado de personal (6-30 empleados) o un comité de empresa (más de 50). Sus miembros son elegidos por los propios trabajadores y tienen el derecho legal de trasladar las inquietudes del equipo a la dirección.' },
               { q: '¿Cuántos empleados se necesitan?', a: 'La ley exige representación a partir de 6 empleados. El número de representantes varía según el tamaño de la plantilla. La plataforma calcula automáticamente el umbral necesario.' },
               { q: '¿Qué pasa si RRHH no colabora?', a: 'No es necesaria su colaboración. RRHH es notificado y puede facilitar el acceso, pero el proceso avanza igualmente si los empleados alcanzan el umbral por sus propios medios.' },
               { q: '¿Necesito instalar algo?', a: 'No. Todo funciona desde el navegador. El acceso es mediante enlace mágico enviado por email — sin contraseñas, sin apps, sin registros.' },
