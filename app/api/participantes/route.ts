@@ -53,62 +53,89 @@ async function intentarTransicionFase2(procesoId: string) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, nombre, edad, sexo } = body;
+    const { token, nombre, apellidos, sexo } = body;
 
     if (!token) {
       return NextResponse.json({ error: 'Token inválido' }, { status: 400 });
     }
 
-    // Look up invitacion
-    const { data: invitacion, error: invitacionError } = await supabaseAdmin
+    // 1. Buscar en invitaciones (flujo normal de compañeros)
+    const { data: invitacion } = await supabaseAdmin
       .from('invitaciones')
       .select('*')
       .eq('token', token)
       .eq('usado', false)
       .single();
 
-    if (invitacionError || !invitacion) {
+    if (invitacion) {
+      // Flujo normal: crear participante desde invitación
+      const tokenAcceso = generarToken();
+
+      const { data: participante, error: participanteError } = await supabaseAdmin
+        .from('participantes')
+        .insert({
+          proceso_id: invitacion.proceso_id,
+          email_hash: invitacion.email_hash,
+          token_acceso: tokenAcceso,
+          es_iniciador: false,
+          es_rrhh: false,
+          nombre: nombre || null,
+          apellidos: apellidos || null,
+          sexo: sexo || null,
+        })
+        .select()
+        .single();
+
+      if (participanteError || !participante) {
+        return NextResponse.json({ error: 'Failed to join proceso' }, { status: 500 });
+      }
+
+      await supabaseAdmin.from('invitaciones').update({ usado: true }).eq('id', invitacion.id);
+
+      intentarTransicionFase2(invitacion.proceso_id).catch(e =>
+        console.error('Error en transición fase 1→2:', e)
+      );
+
+      return NextResponse.json({
+        success: true,
+        participante_id: participante.id,
+        proceso_id: participante.proceso_id,
+        token_acceso: tokenAcceso,
+      });
+    }
+
+    // 2. Buscar en participantes.token_acceso (flujo del iniciador)
+    const { data: participanteExistente, error: participanteError } = await supabaseAdmin
+      .from('participantes')
+      .select('*')
+      .eq('token_acceso', token)
+      .single();
+
+    if (participanteError || !participanteExistente) {
       return NextResponse.json({ error: 'Token inválido o ya utilizado' }, { status: 400 });
     }
 
-    // Generate access token for participant
-    const tokenAcceso = generarToken();
-
-    // Insert participante
-    const { data: participante, error: participanteError } = await supabaseAdmin
+    // Actualizar datos del iniciador (nombre, apellidos, sexo)
+    await supabaseAdmin
       .from('participantes')
-      .insert({
-        proceso_id: invitacion.proceso_id,
-        email_hash: invitacion.email_hash,
-        token_acceso: tokenAcceso,
-        es_iniciador: false,
-        es_rrhh: false,
+      .update({
         nombre: nombre || null,
-        edad: edad || null,
+        apellidos: apellidos || null,
         sexo: sexo || null,
       })
-      .select()
-      .single();
+      .eq('id', participanteExistente.id);
 
-    if (participanteError || !participante) {
-      return NextResponse.json({ error: 'Failed to join proceso' }, { status: 500 });
-    }
-
-    // Mark invitacion as used
-    await supabaseAdmin.from('invitaciones').update({ usado: true }).eq('id', invitacion.id);
-
-    // Check if this new participant triggers the fase 1→2 transition
-    // (done async — don't block the response)
-    intentarTransicionFase2(invitacion.proceso_id).catch(e =>
+    intentarTransicionFase2(participanteExistente.proceso_id).catch(e =>
       console.error('Error en transición fase 1→2:', e)
-    )
+    );
 
     return NextResponse.json({
       success: true,
-      participante_id: participante.id,
-      proceso_id: participante.proceso_id,
-      token_acceso: tokenAcceso,
+      participante_id: participanteExistente.id,
+      proceso_id: participanteExistente.proceso_id,
+      token_acceso: token,
     });
+
   } catch (error) {
     console.error('Error joining proceso:', error);
     return NextResponse.json({ error: 'Failed to join proceso' }, { status: 500 });
