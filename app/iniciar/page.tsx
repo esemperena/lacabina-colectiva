@@ -312,7 +312,7 @@ export default function IniciarPage() {
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Tu correo</h2>
               <p className="text-gray-600 mb-8">
-                Usaremos este email para enviarte el enlace de acceso al proceso. No lo almacenamos en texto plano — se convierte en un código irreversible que protege tu identidad.
+                Usaremos este email para enviarte el enlace de acceso y mantenerte informado sobre el proceso. No se compartirá con tu empresa.
               </p>
 
               <div className="space-y-6">
@@ -332,7 +332,7 @@ export default function IniciarPage() {
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Privacidad garantizada:</span> Tu correo será hasheado inmediatamente y nunca se guardará en texto plano. Nadie sabrá que iniciaste este proceso.
+                    <span className="font-semibold">Confidencialidad garantizada:</span> Tu empresa no sabrá que iniciaste este proceso. Tu correo se usa únicamente para enviarte notificaciones.
                   </p>
                 </div>
 

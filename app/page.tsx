@@ -91,7 +91,7 @@ export default async function Home() {
           <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-400">
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
-              SHA-256 hash
+              Datos confidenciales
             </div>
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
@@ -174,7 +174,7 @@ export default async function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: '🔐', title: 'Completamente Anónimo', text: 'Los correos se transforman en códigos irreversibles (SHA-256). Nadie sabe quién inició el proceso ni quién participa.' },
+              { icon: '🔐', title: 'Confidencial', text: 'La empresa no puede saber quién ha iniciado el proceso ni quién participa. Tu nombre y tus datos nunca se comparten con tu empresa sin tu consentimiento.' },
               { icon: '⚖️', title: 'Cumplimiento RGPD', text: 'Totalmente conforme con RGPD. Los datos se cifran en tránsito y reposo, y se eliminan tras completar el proceso.' },
               { icon: '📋', title: 'Marco Legal', text: 'Respaldado por el Estatuto de los Trabajadores (arts. 62-66). Todo el proceso es documentado y verificable.' },
             ].map(({ icon, title, text }) => (
@@ -186,15 +186,27 @@ export default async function Home() {
             ))}
           </div>
 
-          {/* Hash example */}
+          {/* What the company sees */}
           <div className="mt-12 max-w-xl mx-auto bg-gray-50 border border-gray-100 rounded-2xl p-6">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4 text-center">Así se protege tu identidad</p>
-            <div className="flex flex-col sm:flex-row items-center gap-3 justify-center text-sm font-mono">
-              <span className="bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-800">maria@empresa.com</span>
-              <svg className="w-5 h-5 text-teal-500 rotate-90 sm:rotate-0 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-              <span className="bg-white border border-gray-200 rounded-lg px-4 py-2 text-teal-700 text-xs">3f4a7c2e8b1d9a0f...</span>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4 text-center">Lo que ve la empresa</p>
+            <div className="flex flex-col gap-3 text-sm">
+              <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3">
+                <span className="text-green-500">✓</span>
+                <span className="text-gray-700">Número total de participantes</span>
+              </div>
+              <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3">
+                <span className="text-green-500">✓</span>
+                <span className="text-gray-700">Propuestas y votos agregados</span>
+              </div>
+              <div className="flex items-center gap-3 bg-white border border-red-100 rounded-lg px-4 py-3">
+                <span className="text-red-400">✗</span>
+                <span className="text-gray-500">Quién inició el proceso</span>
+              </div>
+              <div className="flex items-center gap-3 bg-white border border-red-100 rounded-lg px-4 py-3">
+                <span className="text-red-400">✗</span>
+                <span className="text-gray-500">Quién participa o ha votado</span>
+              </div>
             </div>
-            <p className="text-xs text-gray-400 mt-4 text-center">Transformación irreversible: imposible recuperar el email original.</p>
           </div>
         </div>
       </section>
@@ -209,7 +221,7 @@ export default async function Home() {
           </div>
           <div className="space-y-4">
             {[
-              { q: '¿Es realmente anónimo?', a: 'Sí. Los correos se convierten en un código irreversible (hash SHA-256) y nunca se guardan en texto plano. Al acceder al proceso, tu correo se guarda cifrado solo para enviarte notificaciones — nadie en la empresa puede acceder a él.' },
+              { q: '¿Mi empresa sabrá que participo?', a: 'No. La empresa no tiene acceso a los nombres ni a los datos de quién ha participado. Solo ve el número total de participantes y las propuestas agregadas. Tu nombre se guarda en la plataforma para gestionar el proceso, pero nunca se comparte con tu empresa sin tu consentimiento explícito.' },
               { q: '¿Puede mi empresa tomar represalias?', a: 'El derecho a la representación colectiva está protegido por el Estatuto de los Trabajadores. La empresa no puede identificar a quién inició el proceso ni a quién ha participado.' },
               { q: '¿Cuántos empleados se necesitan?', a: 'La ley exige representación a partir de 6 empleados. El número de representantes varía según el tamaño de la plantilla. La plataforma calcula automáticamente el umbral necesario.' },
               { q: '¿Qué pasa si RRHH no colabora?', a: 'No es necesaria su colaboración. RRHH es notificado y puede facilitar el acceso, pero el proceso avanza igualmente si los empleados alcanzan el umbral por sus propios medios.' },
@@ -243,7 +255,7 @@ export default async function Home() {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">Da el primer paso</h3>
-          <p className="text-teal-100 text-lg mb-10 max-w-xl mx-auto">Nadie sabrá que fuiste tú. Tu identidad está protegida desde el primer momento.</p>
+          <p className="text-teal-100 text-lg mb-10 max-w-xl mx-auto">Tu empresa no sabrá que fuiste tú. Tus datos son confidenciales desde el primer momento.</p>
           <Link href="/iniciar" className="inline-flex items-center gap-2 bg-white text-teal-700 px-8 py-4 rounded-xl font-bold hover:bg-teal-50 transition-all text-lg shadow-xl hover:-translate-y-0.5">
             Iniciar Proceso
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>

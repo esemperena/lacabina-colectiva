@@ -59,7 +59,7 @@ export default function ComoFuncionaPage() {
           <span className="inline-block bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-6">Guía completa</span>
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">Cómo funciona La Cabina Colectiva</h1>
           <p className="text-xl text-gray-500 leading-relaxed">
-            Un proceso diseñado para que los empleados puedan organizarse y negociar colectivamente con su empresa, de forma completamente segura, anónima y respaldada por la ley.
+            Un proceso diseñado para que los empleados puedan organizarse y negociar colectivamente con su empresa, de forma completamente segura, confidencial y respaldada por la ley.
           </p>
         </div>
       </section>
@@ -78,9 +78,9 @@ export default function ComoFuncionaPage() {
             </p>
             <div className="space-y-2.5">
               {[
-                'Tu email se convierte en un código irreversible (SHA-256). Nadie puede identificarte a partir de él.',
-                'Las propuestas son anónimas por defecto. Solo tú decides si firmar las tuyas.',
-                'RRHH solo ve el número total de participantes, nunca sus identidades ni sus votos.',
+                'Tu empresa no puede saber quién ha iniciado el proceso ni quién participa.',
+                'Tu nombre y tus datos se guardan en la plataforma, pero nunca se comparten con tu empresa sin tu consentimiento.',
+                'RRHH solo ve el número total de participantes y las propuestas agregadas, nunca quién hay detrás.',
               ].map((item) => (
                 <div key={item} className="flex items-start gap-3 bg-white rounded-xl border border-teal-100 px-4 py-3">
                   <span className="text-teal-500 font-bold mt-0.5 shrink-0">→</span>
@@ -302,7 +302,7 @@ export default function ComoFuncionaPage() {
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '28px 28px' }} />
           <div className="relative">
             <h2 className="text-3xl font-bold text-white mb-4">¿Listo para empezar?</h2>
-            <p className="text-teal-100 text-lg mb-8 max-w-xl mx-auto">Gratis, anónimo y respaldado por la ley.</p>
+            <p className="text-teal-100 text-lg mb-8 max-w-xl mx-auto">Gratis, confidencial y respaldado por la ley.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/iniciar" className="bg-white text-teal-700 font-bold px-8 py-4 rounded-xl hover:bg-teal-50 transition-colors text-lg">Iniciar un proceso</Link>
               <Link href="/login" className="border-2 border-white/60 text-white font-bold px-8 py-4 rounded-xl hover:bg-white/10 transition-colors text-lg">Acceder a mi proceso</Link>
