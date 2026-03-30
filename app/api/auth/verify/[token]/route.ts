@@ -17,7 +17,7 @@ export async function GET(
 
   if (!participante || error) {
     console.error('Auth verify: token not found', { token: token.substring(0, 8) + '...', error })
-    return NextResponse.redirect(new URL('/login?error=invalid', APP_URL))
+    return NextResponse.redirect(new URL('/acceso-invalido', APP_URL))
   }
 
   const response = NextResponse.redirect(

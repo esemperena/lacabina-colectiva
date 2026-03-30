@@ -357,3 +357,41 @@ export async function enviarEmailSorteoRepresentante(
     `,
   })
 }
+
+export async function enviarRecordatorioInvitacion(
+  email: string,
+  tokenInvitacion: string,
+  nombreEmpresa: string
+) {
+  const enlace = `${APP_URL}/unirse/${tokenInvitacion}`
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `Recordatorio: todavía puedes unirte al proceso en ${nombreEmpresa}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1f2937;">
+        <div style="background: #0d9488; padding: 24px 32px; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 22px;">La Cabina Colectiva</h1>
+        </div>
+        <div style="padding: 32px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+          <h2 style="color: #111827; margin-top: 0;">Aún estás a tiempo de participar</h2>
+          <p style="color: #4b5563;">Hace unos días recibiste una invitación para unirte al proceso de representación colectiva en <strong>${nombreEmpresa}</strong>. El proceso sigue activo y tu voz sigue siendo importante.</p>
+
+          <div style="background: #f0fdfa; border-left: 4px solid #0d9488; padding: 14px 18px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0; color: #134e4a; font-size: 14px; line-height: 1.6;">Tu participación es <strong>completamente confidencial</strong>. La empresa no sabrá que te has unido ni qué propones. Solo verá el número total de participantes.</p>
+          </div>
+
+          <div style="margin: 24px 0;">
+            <a href="${enlace}" style="display: inline-block; padding: 14px 28px; background-color: #0d9488; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px;">
+              Unirme ahora →
+            </a>
+          </div>
+
+          <p style="color: #9ca3af; font-size: 12px;">Si no quieres participar, simplemente ignora este email. No recibirás más recordatorios.</p>
+          <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 24px 0;" />
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">La Cabina Colectiva — Representación colectiva para empresas modernas</p>
+        </div>
+      </div>
+    `,
+  })
+}

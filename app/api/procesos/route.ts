@@ -39,6 +39,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Rate limiting: máximo 3 procesos por email iniciador en las últimas 24h
+    const hace24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count: procesosRecientes } = await supabaseAdmin
+      .from('participantes')
+      .select('id', { count: 'exact', head: true })
+      .eq('email_contacto', iniciador_email)
+      .eq('es_iniciador', true)
+      .gte('created_at', hace24h);
+
+    if ((procesosRecientes ?? 0) >= 3) {
+      return NextResponse.json(
+        { error: 'Has iniciado demasiados procesos en las últimas 24 horas. Inténtalo más tarde.' },
+        { status: 429 }
+      );
+    }
+
     // Create empresa record
     const { data: empresa, error: empresaError } = await supabaseAdmin
       .from('empresas')
@@ -119,12 +135,13 @@ export async function POST(request: NextRequest) {
       const emailHash = hashEmail(colegaEmail);
       const invitacionToken = generarToken();
 
-      // Insert invitation
+      // Insert invitation (guardamos email para poder enviar recordatorios)
       const { error: invitacionError } = await supabaseAdmin
         .from('invitaciones')
         .insert({
           proceso_id: proceso.id,
           email_hash: emailHash,
+          email: colegaEmail,
           token: invitacionToken,
           usado: false,
         });
